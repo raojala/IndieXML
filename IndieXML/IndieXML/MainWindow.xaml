@@ -7,6 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
+
+        <StackPanel>
+
+            <!---->
+            <StackPanel Height="35" x:Name="TopNav" Orientation="Horizontal" VerticalAlignment="Top" >
+
+            </StackPanel>
+            
+            <!---->
+            <StackPanel x:Name="MainContent">
+
+            </StackPanel>
+
+        </StackPanel>
+        
+        <!---->
+        <StackPanel Height="35" x:Name="BotNav" Orientation="Horizontal" VerticalAlignment="Bottom" >
+
+        </StackPanel>
         
     </Grid>
 </Window>
