@@ -23,6 +23,21 @@ namespace IndieXML
         public MainWindow()
         {
             InitializeComponent();
+            OnStart();
+        }
+        
+        public void OnStart ()
+        {
+            try
+            {
+                PluginCore pluginCore = new PluginCore();
+
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString(), "Error");
+            }
         }
     }
 }
