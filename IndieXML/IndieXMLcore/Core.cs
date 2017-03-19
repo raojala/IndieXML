@@ -14,8 +14,6 @@ namespace IndieXMLcore
     public class Core : IPlug
     {
 
-        
-
         public string Name
         {
             get
@@ -28,7 +26,6 @@ namespace IndieXMLcore
         {
             try
             {
-                // System.Windows.MessageBox.Show("Do Something in First Plugin");
 
                 // first item in menu is always the text that is showing in the topnav
                 // so every menuitem is a child of a menuitem that is a child of a menu
@@ -93,6 +90,7 @@ namespace IndieXMLcore
                 dg.ItemsSource = dt.AsDataView();
 
                 MainContent.Children.Add(dg);
+                
             }
             catch (Exception ex)
             {
