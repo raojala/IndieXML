@@ -89,6 +89,7 @@ namespace IndieXMLcore
 
                 DataGrid dg = new DataGrid();
                 dg.Name = "dgMainView";
+                dg.LoadingRow += DataGrid_LoadingRow;
                 dg.ItemsSource = dt.AsDataView();
 
                 MainContent.Children.Add(dg);
@@ -97,6 +98,12 @@ namespace IndieXMLcore
             {
                 throw ex;
             }
+        }
+
+        // event method to add rownumbers
+        void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex()).ToString();
         }
     }
 }
