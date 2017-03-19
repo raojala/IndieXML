@@ -12,51 +12,35 @@ namespace IndieXML
 {
     class PluginCore
     {
-
-        public PluginCore (StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
+        // default constructor
+        public PluginCore(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
         {
-            LoadPlugins(TopNav, BotNav, MainContent);
+            LoadPlugins(TopNav, BotNav, MainContent); // we need menus here so we can pass them on in case plugins want to implement menuitems
         }
 
         private void LoadPlugins(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
         {
             try
             {
+                Type pluginType = typeof(IPlug); // what type to look for from assembly types //#CodeID001
+                List<Type> pluginTypes = new List<Type>(); // list of all the plugins with our interface
 
-                // specifies the folder for plugins and lists the DLL paths to an array
-                string pluginPath = Directory.GetCurrentDirectory() + @"\Plugins\";
-                string[] files = Directory.GetFiles(pluginPath, "*.dll");
-
-                // use dll paths to load the DLL files to a list
-                List<Assembly> assemblies = new List<Assembly>();
+                // Paths
+                string pluginPath = Directory.GetCurrentDirectory() + @"\Plugins\"; // get path for our plugin directory
+                string[] files = Directory.GetFiles(pluginPath, "*.dll"); // get paths to every .dll file.
+                
                 foreach (string s in files)
                 {
-                    AssemblyName an = AssemblyName.GetAssemblyName(s);
-                    Assembly assembly = Assembly.Load(an);
-                    //System.Windows.MessageBox.Show(assembly.GetType().ToString());
-                    assemblies.Add(assembly); // add plugin to list
-                }
-
-                Type pluginType = typeof(IPlug);
-                List<Type> pluginTypes = new List<Type>();
-                foreach (Assembly assembly in assemblies)
-                {
-                    if (assembly != null)
+                    AssemblyName an = AssemblyName.GetAssemblyName(s); // get assemblyname from dll paths string
+                    Assembly assembly = Assembly.Load(an); // load in the assembly
+                    
+                    Type[] types = assembly.GetTypes(); //#CodeID001, list all types the assembly has
+                    foreach (Type type in types)
                     {
-                        Type[] types = assembly.GetTypes();
-                        foreach (Type type in types)
+                        if (type.GetInterface(pluginType.FullName) != null && !type.IsAbstract && !type.IsInterface) // check that the type we are looking at is a class that implements our interface and not an abstract class or interface file
                         {
-                            if (type.IsInterface || type.IsAbstract)
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                if (type.GetInterface(pluginType.FullName) != null)
-                                {
-                                    pluginTypes.Add(type);
-                                }
-                            }
+                            System.Windows.MessageBox.Show(type.GetInterface(pluginType.FullName).ToString()); // temporary debug statement
+                            pluginTypes.Add(type); // add to plugins list so we can access it later
                         }
                     }
                 }
@@ -67,7 +51,7 @@ namespace IndieXML
 
                     IPlug plug = (IPlug)Activator.CreateInstance(type);
                     plugins.Add(plug.Name, plug);
-                    plug.Do(TopNav, BotNav, MainContent);
+                    plug.Update(TopNav, BotNav, MainContent);
                 }
             }
             catch (Exception ex)

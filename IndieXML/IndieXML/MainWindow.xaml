@@ -10,9 +10,9 @@
         <!-- Menu definitions -->
         <StackPanel Margin="0,0,0,20">
             <StackPanel Margin="0,0,0,10" x:Name="TopNav" Orientation="Horizontal" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-            <StackPanel Margin="5,0,5,0" x:Name="MainContent"/>
+            <StackPanel Margin="5,5,5,5" x:Name="MainContent"/>
         </StackPanel>
-
+        
         <StackPanel x:Name="BotNav" Orientation="Horizontal" VerticalAlignment="Bottom" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
         
     </Grid>
