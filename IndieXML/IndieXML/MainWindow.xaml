@@ -7,25 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-
-        <StackPanel>
-
-            <!---->
-            <StackPanel Height="35" x:Name="TopNav" Orientation="Horizontal" VerticalAlignment="Top" >
-
-            </StackPanel>
-            
-            <!---->
-            <StackPanel x:Name="MainContent">
-
-            </StackPanel>
-
+        <!-- Menu definitions -->
+        <StackPanel Margin="0,0,0,20">
+            <StackPanel Margin="0,0,0,10" x:Name="TopNav" Orientation="Horizontal" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+            <StackPanel Margin="5,0,5,0" x:Name="MainContent"/>
         </StackPanel>
-        
-        <!---->
-        <StackPanel Height="35" x:Name="BotNav" Orientation="Horizontal" VerticalAlignment="Bottom" >
 
-        </StackPanel>
+        <StackPanel x:Name="BotNav" Orientation="Horizontal" VerticalAlignment="Bottom" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
         
     </Grid>
 </Window>

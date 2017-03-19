@@ -28,15 +28,15 @@ namespace IndieXML
         
         public void OnStart ()
         {
+            
             try
             {
-                PluginCore pluginCore = new PluginCore();
-
+                PluginCore pluginCore = new PluginCore(TopNav, BotNav, MainContent);
+                
             }
             catch (Exception ex)
             {
-
-                MessageBox.Show(ex.ToString(), "Error");
+                MessageBox.Show(ex.Message, "Error"); // virheraportti palaute ikkuna jossa lyhyt syöte kenttä jonka ohjelma lähettää spostiin login kanssa?
             }
         }
     }

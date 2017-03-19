@@ -99,6 +99,12 @@
   <ItemGroup>
     <Folder Include="Plugins\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IndieXMLIPlugin\IndieXMLIPlugin.csproj">
+      <Project>{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}</Project>
+      <Name>IndieXMLIPlugin</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
