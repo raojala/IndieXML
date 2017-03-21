@@ -14,6 +14,8 @@ namespace IndieXMLcore
     public class Core : IPlug
     {
 
+        #region PROPSANDVARS
+
         public string Name
         {
             get
@@ -21,8 +23,10 @@ namespace IndieXMLcore
                 return "Core";
             }
         }
+        #endregion
 
-        public void Update (StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
+        #region METHODS
+        public void Update(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
         {
             try
             {
@@ -33,7 +37,7 @@ namespace IndieXMLcore
                 // are actual menuitems in the dropdown.
 
                 // menuitem that shows in topnav
-                MenuItem file = new MenuItem(); 
+                MenuItem file = new MenuItem();
                 file.Header = "_File"; // underscore in header places shortcut key.
 
                 // menuitems that show under the file in topnav
@@ -54,9 +58,39 @@ namespace IndieXMLcore
             }
             catch (Exception ex)
             {
-                throw ex ;
+                throw ex;
             }
         }
+
+        private void CreateDataGrid(StackPanel MainContent)
+        {
+            try
+            {
+                // create datagrid and set in few columns and rows (default for new file)
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Column 1");
+                dt.Columns.Add("Column 2");
+                dt.Columns.Add("Column 3");
+                dt.Rows.Add();
+                dt.Rows.Add();
+                dt.Rows.Add();
+
+                DataGrid dg = new DataGrid();
+                dg.Name = "dgMainView";
+                dg.LoadingRow += DataGrid_LoadingRow;
+                dg.ItemsSource = dt.AsDataView();
+
+                MainContent.Children.Add(dg);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region EVENTHANDLERS
 
         // application shutdown event for quit menuitem
         private void ApplicationQuit(object sender, RoutedEventArgs e)
@@ -72,36 +106,13 @@ namespace IndieXMLcore
             }
         }
 
-        private void CreateDataGrid(StackPanel MainContent)
-        {
-            try
-            {
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Column 1");
-                dt.Columns.Add("Column 2");
-                dt.Columns.Add("Column 3");
-                dt.Rows.Add();
-                dt.Rows.Add();
-                dt.Rows.Add();
-
-                DataGrid dg = new DataGrid();
-                dg.Name = "dgMainView";
-                dg.LoadingRow += DataGrid_LoadingRow;
-                dg.ItemsSource = dt.AsDataView();
-
-                MainContent.Children.Add(dg);
-                
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         // event method to add rownumbers
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex()).ToString();
         }
+
+        #endregion
+
     }
 }

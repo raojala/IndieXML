@@ -23,7 +23,7 @@ namespace IndieXML
             try
             {
                 Type pluginType = typeof(IPlug); // what type to look for from assembly types //#CodeID001
-                List<Type> pluginTypes = new List<Type>(); // list of all the plugins with our interface
+                Dictionary<string, IPlug> plugins = new Dictionary<string, IPlug>(); // list of plugins
 
                 // Paths
                 string pluginPath = Directory.GetCurrentDirectory() + @"\Plugins\"; // get path for our plugin directory
@@ -39,19 +39,13 @@ namespace IndieXML
                     {
                         if (type.GetInterface(pluginType.FullName) != null && !type.IsAbstract && !type.IsInterface) // check that the type we are looking at is a class that implements our interface and not an abstract class or interface file
                         {
-                            System.Windows.MessageBox.Show(type.GetInterface(pluginType.FullName).ToString()); // temporary debug statement
-                            pluginTypes.Add(type); // add to plugins list so we can access it later
+                            System.Windows.MessageBox.Show(type.GetInterface(pluginType.FullName).ToString()); // temporary debug statement #!#!#!#!#!#!#
+
+                            IPlug plug = (IPlug)Activator.CreateInstance(type);
+                            plugins.Add(plug.Name, plug); // store the plugin in dictionary with a keyword, for later use.
+                            plug.Update(TopNav, BotNav, MainContent);
                         }
                     }
-                }
-
-                Dictionary<string, IPlug> plugins = new Dictionary<string, IPlug>();
-                foreach (Type type in pluginTypes)
-                {
-
-                    IPlug plug = (IPlug)Activator.CreateInstance(type);
-                    plugins.Add(plug.Name, plug);
-                    plug.Update(TopNav, BotNav, MainContent);
                 }
             }
             catch (Exception ex)
