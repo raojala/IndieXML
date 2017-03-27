@@ -1,4 +1,5 @@
 ﻿using IndieXMLIPlugin;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,7 +16,7 @@ namespace IndieXMLcore
     {
 
         #region PROPSANDVARS
-
+        StackPanel TopNav, BotNav, MainContent;
         public string Name
         {
             get
@@ -26,11 +27,19 @@ namespace IndieXMLcore
         #endregion
 
         #region METHODS
-        public void Update(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
+
+        public void Update(StackPanel topNav, StackPanel botNav, StackPanel mainContent)
+        {
+            TopNav = topNav;
+            BotNav = botNav;
+            MainContent = mainContent;
+            Initialize();
+        }
+
+        private void Initialize ()
         {
             try
             {
-
                 // first item in menu is always the text that is showing in the topnav
                 // so every menuitem is a child of a menuitem that is a child of a menu
                 // the first child of a menu is the menu name, and all the childs of that child
@@ -82,12 +91,60 @@ namespace IndieXMLcore
 
                 MainContent.Children.Add(dg);
 
+                ImportXml();
+
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        private void ImportXml ()
+        {
+            try
+            {
+                DataGrid dg = new DataGrid();
+
+                DataSet ds = new DataSet();
+                DataView dv;
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    // file.Source = new Uri(openFileDialog.FileName);
+                    ds.ReadXml(openFileDialog.FileName);
+                }
+
+
+                foreach (UIElement uie in MainContent.Children) 
+                {
+                    if(uie.GetType() == typeof(DataGrid))
+                    {
+                        DataGrid dgTemp = (DataGrid) uie;
+                        if (dgTemp.Name == "dgMainView")
+                        {
+                            dg = dgTemp; // get datagrid from main content children
+                        }
+                    }
+                }
+
+
+                //MessageBox.Show(file.XPath );
+                
+                dv = ds.Tables[0].DefaultView;
+                dg.ItemsSource = dv;
+                //dg.VerticalAlignment = VerticalAlignment.Stretch;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
         #endregion
 
         #region EVENTHANDLERS

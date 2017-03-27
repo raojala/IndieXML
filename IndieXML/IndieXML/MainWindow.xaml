@@ -8,12 +8,8 @@
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <!-- Menu definitions -->
-        <StackPanel Margin="0,0,0,20">
-            <StackPanel Margin="0,0,0,10" x:Name="TopNav" Orientation="Horizontal" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-            <StackPanel Margin="5,5,5,5" x:Name="MainContent"/>
-        </StackPanel>
-        
-        <StackPanel x:Name="BotNav" Orientation="Horizontal" VerticalAlignment="Bottom" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-        
+        <StackPanel Height="25" x:Name="TopNav" VerticalAlignment="Top" Orientation="Horizontal" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <StackPanel Margin="2,25,2,25" x:Name="MainContent" VerticalAlignment="Stretch"/>
+        <StackPanel Height="25" VerticalAlignment="Bottom" x:Name="BotNav" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
     </Grid>
 </Window>
