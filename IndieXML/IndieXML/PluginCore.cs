@@ -13,12 +13,12 @@ namespace IndieXML
     class PluginCore
     {
         // default constructor
-        public PluginCore(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
+        public PluginCore(DockPanel dp)
         {
-            LoadPlugins(TopNav, BotNav, MainContent); // we need menus here so we can pass them on in case plugins want to implement menuitems
+            LoadPlugins(dp); // we need menus here so we can pass them on in case plugins want to implement menuitems
         }
 
-        private void LoadPlugins(StackPanel TopNav, StackPanel BotNav, StackPanel MainContent)
+        private void LoadPlugins(DockPanel dp)
         {
             try
             {
@@ -28,12 +28,12 @@ namespace IndieXML
                 // Paths
                 string pluginPath = Directory.GetCurrentDirectory() + @"\Plugins\"; // get path for our plugin directory
                 string[] files = Directory.GetFiles(pluginPath, "*.dll"); // get paths to every .dll file.
-                
+
                 foreach (string s in files)
                 {
                     AssemblyName an = AssemblyName.GetAssemblyName(s); // get assemblyname from dll paths string
                     Assembly assembly = Assembly.Load(an); // load in the assembly
-                    
+
                     Type[] types = assembly.GetTypes(); //#CodeID001, list all types the assembly has
                     foreach (Type type in types)
                     {
@@ -43,7 +43,8 @@ namespace IndieXML
 
                             IPlug plug = (IPlug)Activator.CreateInstance(type);
                             plugins.Add(plug.Name, plug); // store the plugin in dictionary with a keyword, for later use.
-                            plug.Update(TopNav, BotNav, MainContent);
+                            plug.Update(dp);
+
                         }
                     }
                 }

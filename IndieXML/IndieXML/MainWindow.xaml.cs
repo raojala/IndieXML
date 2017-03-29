@@ -31,7 +31,7 @@ namespace IndieXML
             
             try
             {
-                PluginCore pluginCore = new PluginCore(TopNav, BotNav, MainContent);
+                PluginCore pluginCore = new PluginCore(dpMain);
                 
             }
             catch (Exception ex)
