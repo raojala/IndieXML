@@ -42,11 +42,23 @@ namespace IndieXMLcore
                 dpMain = dp;
                 SetProperties();
                 Buttons();
+                InitDataGrid();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+
+        private void InitDataGrid()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Col 1");
+            dt.Columns.Add("Col 2");
+            dt.Columns.Add("Col 3");
+            dgMain.ItemsSource = dt.DefaultView;
+            ((DataView)dgMain.ItemsSource).Table.Rows.Add();
+            dgMain.CellEditEnding += SetNewLastRow;
         }
 
         private void SetProperties()
@@ -167,20 +179,42 @@ namespace IndieXMLcore
             }
         }
 
-        /*  
-            XML tiedoston koko: 12 620KB
-            importtaus aika: 2.2450556 sekuntia
-            save aika (bin): 1.1165021 sekuntia
-            Binin koko: 17 852KB
-            load aika: 0.6721342
-         */
         private void SaveFile()
         {
-            FileStream fs = new FileStream(@"test.bin", FileMode.OpenOrCreate);
-            BinaryFormatter bf = new BinaryFormatter();
-            debugTime = DateTime.Now;
-            bf.Serialize(fs, ((DataView)dgMain.ItemsSource).ToTable());
-            fs.Close();
+            string filePath = "";
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                filePath = saveFileDialog.FileName;
+            }
+
+            if(File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                FileStream test = new FileStream(filePath, FileMode.Create);
+                test.Close();
+            }
+            else
+            {
+                File.Delete(filePath);
+                FileStream test = new FileStream(filePath, FileMode.Create);
+                test.Close();
+            }
+
+            /*isoissa xml tiedostoissa loppuu muisti.*/
+            //FileStream fs = new FileStream(filePath, FileMode.Append);
+            //BinaryFormatter bf = new BinaryFormatter();
+            //debugTime = DateTime.Now;
+
+            //for (int i = 0; i < ((DataView)dgMain.ItemsSource).ToTable().Rows.Count; i++)
+            //{
+            //    bf.Serialize(fs, ((DataRow)((DataView)dgMain.ItemsSource).ToTable().Rows[i]));
+            //}
+
+            // #### how to serialize one row at a time ??!?!?!?!?! ############################################################################
+            
+            //fs.Close();
             MessageBox.Show((DateTime.Now - debugTime).ToString());
         }
 
@@ -235,6 +269,7 @@ namespace IndieXMLcore
             }
         }
 
+        // even to listen save and load button clicks
         void saveFileEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -247,7 +282,6 @@ namespace IndieXMLcore
                 throw ex;
             }
         }
-
         void loadFileEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -261,6 +295,67 @@ namespace IndieXMLcore
             }
         }
 
+        // add new row if last row in the collection was edited.
+        private void SetNewLastRow(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            /* add one new row at the beginning of an cell edit. 
+             * (otherwise if uses doesn't create one manually after edit, 
+             * the last row won't save)
+             * Items.count needs -2 instead of -1 BECAUSE datagrid items has one item always
+             * stored to the last position which is {new item placeholder}
+             */
+
+            if (dgMain.Items.Count - 1 == dgMain.Items.IndexOf(dgMain.CurrentItem) && e.EditAction == DataGridEditAction.Commit)
+            {
+                ((DataView)dgMain.ItemsSource).Table.Rows.Add();
+            }
+        }
+
         #endregion
     }
 }
+
+// XML - BIN load time comparisons
+/*  W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
+XML file size: 12620KB
+importtaus aika: 2.2450556 sekuntia
+-> save to bin time: 1.1165021 sekuntia
+Bin size: 17 852KB
+Load bin time: 0.6721342
+
+3.340 times faster
+*/
+
+/* W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
+XML file size: 108982KB
+import time: 12.9539345 seconds
+-> save to bin time: 5.1722389 seconds
+Bin size: 155115KB
+*Restart
+Load bin time: 3.4223638 seconds
+
+3.785 times faster
+*/
+
+/* W3Schools, plant_catalog.xml (Unedited)
+XML file size: 8KB
+import time: 0.0150168 seconds
+-> save to bin time: 0.0080184 seconds
+Bin size: 16KB
+*Restart
+Load bin time: 0.0090109 seconds
+
+1.6665 times faster
+*/
+
+/* W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
+XML file size: 314540KB
+import time: 38.2134741seconds
+-> save to bin time: seconds
+Bin size: KB
+*Restart
+Load bin time: seconds
+
+## FAILED, SYSTEM OUT OF MEMORY
+fix ideas, save line at a time and remove it from datatable after?
+*/

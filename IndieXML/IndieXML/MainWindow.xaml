@@ -19,14 +19,10 @@
         <StackPanel x:Name="TopNav" Orientation="Horizontal" DockPanel.Dock="Top"/>
         <StackPanel x:Name="BotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
         <StackPanel x:Name="MainContent" DockPanel.Dock="Bottom" />
-        <DataGrid x:Name="dgMainView" AutoGenerateColumns="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Col 1"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Col 2"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Col 3"/>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Col 4"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <DataGrid x:Name="dgMainView" 
+                  AutoGenerateColumns="True" 
+                  CanUserAddRows="False"
+                  IsReadOnly="False"/>
     </DockPanel>
 
 
