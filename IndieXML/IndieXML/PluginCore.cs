@@ -39,12 +39,9 @@ namespace IndieXML
                     {
                         if (type.GetInterface(pluginType.FullName) != null && !type.IsAbstract && !type.IsInterface) // check that the type we are looking at is a class that implements our interface and not an abstract class or interface file
                         {
-                            //System.Windows.MessageBox.Show(type.GetInterface(pluginType.FullName).ToString()); // temporary debug statement #!#!#!#!#!#!#
-
                             IPlug plug = (IPlug)Activator.CreateInstance(type);
                             plugins.Add(plug.Name, plug); // store the plugin in dictionary with a keyword, for later use.
                             plug.Update(dp);
-
                         }
                     }
                 }

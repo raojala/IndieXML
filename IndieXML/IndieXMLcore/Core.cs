@@ -52,13 +52,20 @@ namespace IndieXMLcore
 
         private void InitDataGrid()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Col 1");
-            dt.Columns.Add("Col 2");
-            dt.Columns.Add("Col 3");
-            dgMain.ItemsSource = dt.DefaultView;
-            ((DataView)dgMain.ItemsSource).Table.Rows.Add();
-            dgMain.CellEditEnding += SetNewLastRow;
+            try
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Col 1");
+                dt.Columns.Add("Col 2");
+                dt.Columns.Add("Col 3");
+                dgMain.ItemsSource = dt.DefaultView;
+                ((DataView)dgMain.ItemsSource).Table.Rows.Add();
+                dgMain.CellEditEnding += SetNewLastRow;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void SetProperties()
@@ -85,10 +92,10 @@ namespace IndieXMLcore
                     }
                     else if (uiElement.GetType() == typeof(DataGrid))
                     {
-                        dgMain = (DataGrid)uiElement;
-                        if (dgMain.Name == "dgMainView")
+                        if (((DataGrid)uiElement).Name == "dgMainView")
                         {
-                            break;
+                            dgMain = (DataGrid)uiElement;
+                            dgMain.LoadingRow += DataGrid_LoadingRow;
                         }
                     }
                 }
@@ -128,6 +135,10 @@ namespace IndieXMLcore
                 getXML.Click += ImportXMLEvent;
                 file.Items.Add(getXML);
 
+                MenuItem setXML = new MenuItem();
+                setXML.Header = "_Export XML";
+                setXML.Click += ExportXMLEvent;
+                file.Items.Add(setXML);
 
                 // menuitems that show under the file in topnav
                 MenuItem quit = new MenuItem();
@@ -142,36 +153,6 @@ namespace IndieXMLcore
                 TopNav.Children.Add(menu);
 
             }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        private void ImportXml()
-        {
-            try
-            {
-
-                DataSet ds = new DataSet();
-                DataView dv;
-
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    // file.Source = new Uri(openFileDialog.FileName);
-                    debugTime = DateTime.Now;
-                    ds.ReadXml(openFileDialog.FileName);
-                }
-
-                dv = ds.Tables[0].DefaultView;
-
-                dgMain.Columns.Clear();
-                dgMain.ItemsSource = dv;
-                System.Windows.MessageBox.Show((DateTime.Now - debugTime).ToString());
-
-            }
             catch (Exception ex)
             {
 
@@ -179,56 +160,141 @@ namespace IndieXMLcore
             }
         }
 
-        private void SaveFile()
+        private void ImportXml()
         {
-            string filePath = "";
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            if (saveFileDialog.ShowDialog() == true)
+            try
             {
-                filePath = saveFileDialog.FileName;
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    DataSet ds = new DataSet();
+                    DataView dv;
+                    // file.Source = new Uri(openFileDialog.FileName);
+                    debugTime = DateTime.Now;
+                    ds.ReadXml(openFileDialog.FileName);
+                    dv = ds.Tables[0].DefaultView;
+                    dgMain.Columns.Clear();
+                    dgMain.ItemsSource = dv;
+                    System.Windows.MessageBox.Show((DateTime.Now - debugTime).ToString());
+                }
             }
-
-            if(File.Exists(filePath))
+            catch (Exception ex)
             {
-                File.Delete(filePath);
-                FileStream test = new FileStream(filePath, FileMode.Create);
-                test.Close();
+                throw ex;
             }
-            else
-            {
-                File.Delete(filePath);
-                FileStream test = new FileStream(filePath, FileMode.Create);
-                test.Close();
-            }
-
-            /*isoissa xml tiedostoissa loppuu muisti.*/
-            //FileStream fs = new FileStream(filePath, FileMode.Append);
-            //BinaryFormatter bf = new BinaryFormatter();
-            //debugTime = DateTime.Now;
-
-            //for (int i = 0; i < ((DataView)dgMain.ItemsSource).ToTable().Rows.Count; i++)
-            //{
-            //    bf.Serialize(fs, ((DataRow)((DataView)dgMain.ItemsSource).ToTable().Rows[i]));
-            //}
-
-            // #### how to serialize one row at a time ??!?!?!?!?! ############################################################################
-            
-            //fs.Close();
-            MessageBox.Show((DateTime.Now - debugTime).ToString());
         }
 
+        private void ExportXml()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
+                    debugTime = DateTime.Now;
+                    dt.WriteXml(filePath);
+                    MessageBox.Show((DateTime.Now - debugTime).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void SaveFile()
+        {
+            
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string filePath = saveFileDialog.FileName;
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
+                    dt.RemotingFormat = SerializationFormat.Binary;
+
+                    FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
+                    try
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        debugTime = DateTime.Now;
+                        bf.Serialize(fs, dt);
+                        fs.Close();
+                        MessageBox.Show((DateTime.Now - debugTime).ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        if (fs != null)
+                        {
+                            fs.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         private void LoadFile()
         {
-            FileStream fs = new FileStream(@"test.bin", FileMode.Open);
-            BinaryFormatter bf = new BinaryFormatter();
-            debugTime = DateTime.Now;
-            DataTable dt = (DataTable)bf.Deserialize(fs);
-            fs.Close();
-            MessageBox.Show((DateTime.Now - debugTime).ToString());
-            dgMain.Columns.Clear();
-            dgMain.ItemsSource = dt.DefaultView;
+
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string filePath = "";
+                    filePath = openFileDialog.FileName;
+                    FileStream fs = new FileStream(filePath, FileMode.Open);
+                    try
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        debugTime = DateTime.Now;
+                        DataTable dt = (DataTable)bf.Deserialize(fs);
+                        fs.Close();
+                        MessageBox.Show((DateTime.Now - debugTime).ToString());
+                        dgMain.Columns.Clear();
+                        dgMain.ItemsSource = dt.DefaultView;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        if (fs != null)
+                        {
+                            fs.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         #endregion
@@ -255,7 +321,7 @@ namespace IndieXMLcore
             e.Row.Header = (e.Row.GetIndex()).ToString();
         }
 
-        // event handler for import xml button
+        // event handler for import/eport xml button
         void ImportXMLEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -264,7 +330,17 @@ namespace IndieXMLcore
             }
             catch (Exception ex)
             {
-
+                throw ex;
+            }
+        }
+        void ExportXMLEvent(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ExportXml();
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
@@ -358,4 +434,29 @@ Load bin time: seconds
 
 ## FAILED, SYSTEM OUT OF MEMORY
 fix ideas, save line at a time and remove it from datatable after?
+
+    #FIX DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
+         dt.RemotingFormat = SerializationFormat.Binary;
+*/
+
+/*
+ Koko: 314Mt
+
+Imoporttaus aika: 
+39.6911868
+39.5700844
+
+rows 1 457 229
+
+tallennus aika
+7.5456524
+7.5063284
+
+load time
+8.1323921
+9.0768272
+
+rows 1 758 229
+
+Koko 124Mt
 */
