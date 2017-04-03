@@ -352,6 +352,10 @@ namespace IndieXMLcore
             {
                 SaveFile();
             }
+            catch (System.OutOfMemoryException oex)
+            {
+                throw oex;
+            }
             catch (Exception ex)
             {
 
@@ -391,72 +395,13 @@ namespace IndieXMLcore
     }
 }
 
-// XML - BIN load time comparisons
-/*  W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
-XML file size: 12620KB
-importtaus aika: 2.2450556 sekuntia
--> save to bin time: 1.1165021 sekuntia
-Bin size: 17 852KB
-Load bin time: 0.6721342
-
-3.340 times faster
-*/
-
-/* W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
-XML file size: 108982KB
-import time: 12.9539345 seconds
--> save to bin time: 5.1722389 seconds
-Bin size: 155115KB
-*Restart
-Load bin time: 3.4223638 seconds
-
-3.785 times faster
-*/
-
-/* W3Schools, plant_catalog.xml (Unedited)
-XML file size: 8KB
-import time: 0.0150168 seconds
--> save to bin time: 0.0080184 seconds
-Bin size: 16KB
-*Restart
-Load bin time: 0.0090109 seconds
-
-1.6665 times faster
-*/
-
-/* W3Schools, plant_catalog.xml (copypasted existing data to make it bigger)
-XML file size: 314540KB
-import time: 38.2134741seconds
--> save to bin time: seconds
-Bin size: KB
-*Restart
-Load bin time: seconds
-
-## FAILED, SYSTEM OUT OF MEMORY
-fix ideas, save line at a time and remove it from datatable after?
-
-    #FIX DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
-         dt.RemotingFormat = SerializationFormat.Binary;
-*/
-
 /*
- Koko: 314Mt
+(x64 build)
+xml size: 349363KB
+xml import time: 1:11.0310633
+save bin time: 14.2248283
+bin size: 137764KB
+bin open time: 15.6126209
 
-Imoporttaus aika: 
-39.6911868
-39.5700844
-
-rows 1 457 229
-
-tallennus aika
-7.5456524
-7.5063284
-
-load time
-8.1323921
-9.0768272
-
-rows 1 758 229
-
-Koko 124Mt
+Rows: 1618559
 */

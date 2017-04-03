@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieXML", "IndieXML\IndieXML.csproj", "{0B139B9E-D2AD-4191-BC2D-B934A1047101}"
 EndProject
@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieXMLcore", "IndieXMLcor
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		debug 32|Any CPU = debug 32|Any CPU
+		debug 32|ARM = debug 32|ARM
+		debug 32|x64 = debug 32|x64
+		debug 32|x86 = debug 32|x86
 		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
@@ -21,6 +25,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|Any CPU.ActiveCfg = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|Any CPU.Build.0 = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|ARM.ActiveCfg = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|ARM.Build.0 = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|x64.ActiveCfg = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|x64.Build.0 = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|x86.ActiveCfg = debug 32|Any CPU
+		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.debug 32|x86.Build.0 = debug 32|Any CPU
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -37,6 +49,14 @@ Global
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Release|x64.Build.0 = Release|Any CPU
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Release|x86.ActiveCfg = Release|Any CPU
 		{0B139B9E-D2AD-4191-BC2D-B934A1047101}.Release|x86.Build.0 = Release|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|Any CPU.ActiveCfg = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|Any CPU.Build.0 = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|ARM.ActiveCfg = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|ARM.Build.0 = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|x64.ActiveCfg = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|x64.Build.0 = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|x86.ActiveCfg = debug 32|Any CPU
+		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.debug 32|x86.Build.0 = debug 32|Any CPU
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -53,6 +73,14 @@ Global
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Release|x64.Build.0 = Release|Any CPU
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Release|x86.ActiveCfg = Release|Any CPU
 		{14AC2F7A-5D7D-44AF-9697-1BDA966F0988}.Release|x86.Build.0 = Release|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|Any CPU.ActiveCfg = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|Any CPU.Build.0 = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|ARM.ActiveCfg = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|ARM.Build.0 = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|x64.ActiveCfg = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|x64.Build.0 = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|x86.ActiveCfg = debug 32|Any CPU
+		{A5813C45-DFE8-45A7-A813-138C41786325}.debug 32|x86.Build.0 = debug 32|Any CPU
 		{A5813C45-DFE8-45A7-A813-138C41786325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A5813C45-DFE8-45A7-A813-138C41786325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5813C45-DFE8-45A7-A813-138C41786325}.Debug|ARM.ActiveCfg = Debug|Any CPU

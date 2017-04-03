@@ -15,7 +15,15 @@ namespace IndieXML
         // default constructor
         public PluginCore(DockPanel dp)
         {
-            LoadPlugins(dp); // we need menus here so we can pass them on in case plugins want to implement menuitems
+            try
+            {
+                LoadPlugins(dp); // we need menus here so we can pass them on in case plugins want to implement menuitems
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
 
         private void LoadPlugins(DockPanel dp)
