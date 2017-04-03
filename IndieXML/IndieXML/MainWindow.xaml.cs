@@ -37,7 +37,7 @@ namespace IndieXML
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error"); // virheraportti palaute ikkuna jossa lyhyt syöte kenttä jonka ohjelma lähettää spostiin login kanssa?
+                MessageBox.Show(ex.Message + "\n\n" + ex.ToString(), "Error"); // virheraportti palaute ikkuna jossa lyhyt syöte kenttä jonka ohjelma lähettää spostiin login kanssa?
             }
         }
     }

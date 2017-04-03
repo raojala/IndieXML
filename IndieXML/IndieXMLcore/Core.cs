@@ -24,6 +24,8 @@ namespace IndieXMLcore
 
         DateTime debugTime;
 
+        DataSet ds;
+
         public string Name
         {
             get
@@ -43,6 +45,7 @@ namespace IndieXMLcore
                 SetProperties();
                 Buttons();
                 InitDataGrid();
+                ds = new DataSet();
             }
             catch (Exception ex)
             {
@@ -54,12 +57,15 @@ namespace IndieXMLcore
         {
             try
             {
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Col 1");
-                dt.Columns.Add("Col 2");
-                dt.Columns.Add("Col 3");
-                dgMain.ItemsSource = dt.DefaultView;
-                ((DataView)dgMain.ItemsSource).Table.Rows.Add();
+                // tee tyhjä default dataset.
+
+
+                //ds.Tables.Add (new DataTable());
+                //ds.Tables[0].TableName = "New Table";
+                //ds.Tables[0].Columns.Add("Col 1");
+                //ds.Tables[0].Columns.Add("Col 2");
+                //ds.Tables[0].Columns.Add("Col 3");
+                //dgMain.ItemsSource = ds.Tables[0].DefaultView;
                 dgMain.CellEditEnding += SetNewLastRow;
             }
             catch (Exception)
