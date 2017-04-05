@@ -22,9 +22,9 @@ namespace IndieXMLcore
         StackPanel TopNav, BotNav, MainContent;
         DataGrid dgMain;
 
-        DateTime debugTime;
-
         DataSet ds;
+
+        TreeView trView;
 
         public string Name
         {
@@ -42,10 +42,17 @@ namespace IndieXMLcore
             try
             {
                 dpMain = dp;
+
+                ds = new DataSet();
+                trView = (TreeView)dpMain.Children[3];
+
                 SetProperties();
                 Buttons();
                 InitDataGrid();
-                ds = new DataSet();
+
+                // set events
+                trView.SelectedItemChanged += trViewItemChanged;
+                dgMain.CellEditEnding += SetNewLastRow;
             }
             catch (Exception ex)
             {
@@ -57,20 +64,38 @@ namespace IndieXMLcore
         {
             try
             {
-                // tee tyhjä default dataset.
+                // make default dataset.
 
-
-                //ds.Tables.Add (new DataTable());
-                //ds.Tables[0].TableName = "New Table";
-                //ds.Tables[0].Columns.Add("Col 1");
-                //ds.Tables[0].Columns.Add("Col 2");
-                //ds.Tables[0].Columns.Add("Col 3");
                 //dgMain.ItemsSource = ds.Tables[0].DefaultView;
-                dgMain.CellEditEnding += SetNewLastRow;
+
+                ds.Tables.Add("Databases"); // parent
+                ds.Tables["Databases"].Columns.Add("DatabaseID");
+
+                ds.Tables.Add("Items"); // child
+                ds.Tables["Items"].Columns.Add("Col 1");
+                ds.Tables["Items"].Columns.Add("Col 2");
+                ds.Tables["Items"].Columns.Add("Col 3");
+                ds.Tables["Items"].Rows.Add();
+
+                
+
+                ds.Relations.Add("relation",
+                    ds.Tables["Databases"].Columns["DatabaseID"],
+                    ds.Tables["Items"].Columns["Col 1"]
+                    );
+
+                trView.Items.Add(ds.Relations[0].ParentTable.ToString());
+                trView.Padding = new Thickness { Right = 10 };
+
+
+                dgMain.DataContext = ds.Relations[0].ChildTable.DefaultView;
+
             }
-            catch (Exception)
+
+
+            catch (Exception ex) 
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -171,22 +196,48 @@ namespace IndieXMLcore
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    DataSet ds = new DataSet();
-                    DataView dv;
-                    // file.Source = new Uri(openFileDialog.FileName);
-                    debugTime = DateTime.Now;
+                    ds = new DataSet();
                     ds.ReadXml(openFileDialog.FileName);
-                    dv = ds.Tables[0].DefaultView;
                     dgMain.Columns.Clear();
-                    dgMain.ItemsSource = dv;
-                    System.Windows.MessageBox.Show((DateTime.Now - debugTime).ToString());
+                    dgMain.ItemsSource = ds.Relations[0].ChildTable.DefaultView;
+
+                    TreeViewItem tvi;
+
+                    trView.Items.Clear();
+
+                    for (int i = 0; i < ds.Relations.Count; i++)
+                    {
+                        tvi = new TreeViewItem();
+                        tvi.Header = ds.Relations[i].ParentTable.ToString();
+                        trView.Items.Add(tvi);
+                    } 
+
+                    //foreach (DataRelation dr in ds.Relations)
+                    //{
+                    //    tvi = new TreeViewItem();
+                    //    tvi.Header = dr.ParentTable.ToString();
+                    //    trView.Items.Add(tvi);
+                    //}
+
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        private void trViewItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            for (int i = 0; i < trView.Items.Count; i++)
+            {
+                if (trView.Items[i] == ((TreeView)sender).SelectedItem)
+                {
+                    dgMain.ItemsSource = ds.Relations[i].ChildTable.DefaultView;
+                }
             }
         }
 
@@ -195,6 +246,7 @@ namespace IndieXMLcore
             try
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string filePath = saveFileDialog.FileName;
@@ -205,9 +257,7 @@ namespace IndieXMLcore
                     }
 
                     DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
-                    debugTime = DateTime.Now;
                     dt.WriteXml(filePath);
-                    MessageBox.Show((DateTime.Now - debugTime).ToString());
                 }
             }
             catch (Exception ex)
@@ -216,12 +266,14 @@ namespace IndieXMLcore
             }
         }
 
+        // BROKEN FIX
         private void SaveFile()
         {
             
             try
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Binary Files (*.bin)|*.bin";
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string filePath = saveFileDialog.FileName;
@@ -230,18 +282,15 @@ namespace IndieXMLcore
                     {
                         File.Delete(filePath);
                     }
-
-                    DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
-                    dt.RemotingFormat = SerializationFormat.Binary;
+                    
+                    ds.RemotingFormat = SerializationFormat.Binary;
 
                     FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
                     try
                     {
                         BinaryFormatter bf = new BinaryFormatter();
-                        debugTime = DateTime.Now;
-                        bf.Serialize(fs, dt);
+                        bf.Serialize(fs, ds);
                         fs.Close();
-                        MessageBox.Show((DateTime.Now - debugTime).ToString());
                     }
                     catch (Exception ex)
                     {
@@ -261,27 +310,31 @@ namespace IndieXMLcore
                 throw ex;
             }
         }
-
+        // BROKEN FIX
         private void LoadFile()
         {
 
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Binary Files (*.bin)|*.bin";
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    string filePath = "";
-                    filePath = openFileDialog.FileName;
+                    string filePath = openFileDialog.FileName;
                     FileStream fs = new FileStream(filePath, FileMode.Open);
                     try
                     {
                         BinaryFormatter bf = new BinaryFormatter();
-                        debugTime = DateTime.Now;
-                        DataTable dt = (DataTable)bf.Deserialize(fs);
+                        ds = (DataSet)bf.Deserialize(fs);
                         fs.Close();
-                        MessageBox.Show((DateTime.Now - debugTime).ToString());
                         dgMain.Columns.Clear();
-                        dgMain.ItemsSource = dt.DefaultView;
+                        dgMain.ItemsSource = ds.Relations[0].ChildTable.DefaultView;
+
+                        trView.Items.Clear();
+                        foreach (DataRelation relation in ds.Relations)
+                        {
+                            trView.Items.Add(relation.ParentTable.ToString());
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -324,7 +377,7 @@ namespace IndieXMLcore
         // event method to add rownumbers
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            e.Row.Header = (e.Row.GetIndex()).ToString();
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
         }
 
         // event handler for import/eport xml button
@@ -391,12 +444,16 @@ namespace IndieXMLcore
              * stored to the last position which is {new item placeholder}
              */
 
+          
             if (dgMain.Items.Count - 1 == dgMain.Items.IndexOf(dgMain.CurrentItem) && e.EditAction == DataGridEditAction.Commit)
             {
                 ((DataView)dgMain.ItemsSource).Table.Rows.Add();
+                DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
+                dt.Rows.Add();
+
+
             }
         }
-
         #endregion
     }
 }

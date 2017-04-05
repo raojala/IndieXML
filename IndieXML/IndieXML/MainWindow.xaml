@@ -19,11 +19,12 @@
         <StackPanel x:Name="TopNav" Orientation="Horizontal" DockPanel.Dock="Top"/>
         <StackPanel x:Name="BotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
         <StackPanel x:Name="MainContent" DockPanel.Dock="Bottom" />
-        <TreeView x:Name="trvTables" DockPanel.Dock="Left" />
+        <TreeView x:Name="trvTables" DockPanel.Dock="Left"/>
         <DataGrid x:Name="dgMainView" 
                   AutoGenerateColumns="True" 
                   CanUserAddRows="False"
-                  IsReadOnly="False"/>
+                  IsReadOnly="False"
+                  ItemsSource="{Binding}"/>
     </DockPanel>
 
 
