@@ -22,7 +22,7 @@
         <TreeView x:Name="trvTables" DockPanel.Dock="Left"/>
         <DataGrid x:Name="dgMainView" 
                   AutoGenerateColumns="True" 
-                  CanUserAddRows="False"
+                  CanUserAddRows="True"
                   IsReadOnly="False"
                   ItemsSource="{Binding}"/>
     </DockPanel>

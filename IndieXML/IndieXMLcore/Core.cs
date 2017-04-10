@@ -77,14 +77,28 @@ namespace IndieXMLcore
                 ds.Tables["Items"].Columns.Add("Col 3");
                 ds.Tables["Items"].Rows.Add();
 
-                
+                ds.Tables.Add("Databases2"); // parent
+                ds.Tables["Databases2"].Columns.Add("DatabaseID");
+
+                ds.Tables.Add("Items2"); // child
+                ds.Tables["Items2"].Columns.Add("1233as 1");
+                ds.Tables["Items2"].Columns.Add("1233as 2");
+                ds.Tables["Items2"].Columns.Add("1233as 3");
+                ds.Tables["Items2"].Rows.Add();
+
 
                 ds.Relations.Add("relation",
                     ds.Tables["Databases"].Columns["DatabaseID"],
                     ds.Tables["Items"].Columns["Col 1"]
                     );
 
+                ds.Relations.Add("relation2",
+                    ds.Tables["Databases2"].Columns["DatabaseID"],
+                    ds.Tables["Items2"].Columns["1233as 1"]
+                    );
+
                 trView.Items.Add(ds.Relations[0].ParentTable.ToString());
+                trView.Items.Add(ds.Relations[1].ParentTable.ToString());
                 trView.Padding = new Thickness { Right = 10 };
 
 
@@ -197,12 +211,17 @@ namespace IndieXMLcore
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "XML Files (*.xml)|*.xml";
+
                 if (openFileDialog.ShowDialog() == true)
                 {
                     ds = new DataSet();
                     ds.ReadXml(openFileDialog.FileName);
                     dgMain.Columns.Clear();
-                    dgMain.ItemsSource = ds.Relations[0].ChildTable.DefaultView;
+
+                    //foreach (DataRelation relation in ds.Relations)
+                    //{
+                    //    relation.ChildTable.Columns.RemoveAt(relation.ChildTable.Columns.Count - 1);
+                    //}
 
                     TreeViewItem tvi;
 
@@ -213,14 +232,11 @@ namespace IndieXMLcore
                         tvi = new TreeViewItem();
                         tvi.Header = ds.Relations[i].ParentTable.ToString();
                         trView.Items.Add(tvi);
-                    } 
+                    }
 
-                    //foreach (DataRelation dr in ds.Relations)
-                    //{
-                    //    tvi = new TreeViewItem();
-                    //    tvi.Header = dr.ParentTable.ToString();
-                    //    trView.Items.Add(tvi);
-                    //}
+                    ((TreeViewItem)trView.Items[0]).IsSelected = true;
+
+                    
 
                 }
             }
@@ -236,7 +252,13 @@ namespace IndieXMLcore
             {
                 if (trView.Items[i] == ((TreeView)sender).SelectedItem)
                 {
-                    dgMain.ItemsSource = ds.Relations[i].ChildTable.DefaultView;
+                    for (int x = 0; x < ds.Tables.Count; x++)
+                    {
+                        if (ds.Tables[x] == ds.Relations[i].ChildTable)
+                        {
+                            dgMain.DataContext = ds.Tables[x];
+                        }
+                    }
                 }
             }
         }
@@ -257,7 +279,8 @@ namespace IndieXMLcore
                     }
 
                     DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
-                    dt.WriteXml(filePath);
+                    ds.WriteXml(filePath);
+                    ds.WriteXmlSchema(filePath + "_schema");
                 }
             }
             catch (Exception ex)
@@ -468,3 +491,38 @@ bin open time: 15.6126209
 
 Rows: 1618559
 */
+ *
+/*
+ private void save_Click(object sender, RoutedEventArgs e)
+    {
+
+
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Indent = true;
+        settings.IndentChars = "\t";
+        settings.ConformanceLevel = ConformanceLevel.Fragment;
+
+        using (StreamWriter sw = new StreamWriter("test.xml"))
+        using (XmlWriter writer = XmlWriter.Create(sw, settings))
+        {
+            writer.WriteStartElement(ds.DataSetName);
+
+            for (int i = 0; i < ds.Relations.Count; i++)
+            {
+                writer.WriteStartElement(ds.Relations[i].ParentTable.TableName);
+
+                for (int y = 0; y < ds.Relations[i].ChildTable.Rows.Count; y++)
+                {
+                    writer.WriteStartElement(ds.Relations[i].ChildTable.TableName);
+                    for (int x = 0; x < ds.Relations[i].ChildTable.Columns.Count; x++)
+                    {
+                        writer.WriteElementString(ds.Relations[i].ChildTable.Columns[x].ColumnName, ds.Relations[i].ChildTable.Rows[y][x].ToString());
+                    }
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
+    } 
+ */
