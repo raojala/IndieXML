@@ -148,9 +148,9 @@ namespace XMLIntegration
                 {
                     DataSet ds = new DataSet();
                     ds.ReadXml(openFileDialog.FileName);
-                    //MainWindow.dataset = (DataSet) ds;
-
                     MainWindow.dataset = ds;
+
+                    // MainWindow.dataset.ReadXml(openFileDialog.FileName);
 
                     dgMain.Columns.Clear();
                     dgMain.DataContext = MainWindow.dataset.Relations[0].ChildTable;
