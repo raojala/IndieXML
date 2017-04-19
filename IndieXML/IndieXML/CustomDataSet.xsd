@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="CustomDataSet" targetNamespace="http://tempuri.org/CustomDataSet.xsd" xmlns:mstns="http://tempuri.org/CustomDataSet.xsd" xmlns="http://tempuri.org/CustomDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="CustomDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="CustomDataSet" msprop:Generator_UserDSName="CustomDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="NPCSDatabase" msprop:Generator_TableClassName="NPCSDatabaseDataTable" msprop:Generator_TableVarName="tableNPCSDatabase" msprop:Generator_RowChangedName="NPCSDatabaseRowChanged" msprop:Generator_TablePropName="NPCSDatabase" msprop:Generator_RowDeletingName="NPCSDatabaseRowDeleting" msprop:Generator_RowChangingName="NPCSDatabaseRowChanging" msprop:Generator_RowEvHandlerName="NPCSDatabaseRowChangeEventHandler" msprop:Generator_RowDeletedName="NPCSDatabaseRowDeleted" msprop:Generator_RowClassName="NPCSDatabaseRow" msprop:Generator_UserTableName="NPCSDatabase" msprop:Generator_RowEvArgName="NPCSDatabaseRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="npc_id" msprop:Generator_ColumnVarNameInTable="columnnpc_id" msprop:Generator_ColumnPropNameInRow="npc_id" msprop:Generator_ColumnPropNameInTable="npc_idColumn" msprop:Generator_UserColumnName="npc_id" type="xs:string" minOccurs="0" />
+              <xs:element name="NPC" msprop:Generator_TableClassName="NPCDataTable" msprop:Generator_TableVarName="tableNPC" msprop:Generator_RowChangedName="NPCRowChanged" msprop:Generator_TablePropName="NPC" msprop:Generator_RowDeletingName="NPCRowDeleting" msprop:Generator_RowChangingName="NPCRowChanging" msprop:Generator_RowEvHandlerName="NPCRowChangeEventHandler" msprop:Generator_RowDeletedName="NPCRowDeleted" msprop:Generator_RowClassName="NPCRow" msprop:Generator_UserTableName="NPC" msprop:Generator_RowEvArgName="NPCRowChangeEvent" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="NPCSDatabase_NPC" msdata:parent="NPCSDatabase" msdata:child="NPC" msdata:parentkey="npc_id" msdata:childkey="npc_name" msprop:Generator_UserChildTable="NPC" msprop:Generator_ChildPropName="GetNPCRows" msprop:Generator_UserRelationName="NPCSDatabase_NPC" msprop:Generator_RelationVarName="relationNPCSDatabase_NPC" msprop:Generator_UserParentTable="NPCSDatabase" msprop:Generator_ParentPropName="NPCSDatabaseRow" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="npc_name" msprop:Generator_ColumnVarNameInTable="columnnpc_name" msprop:Generator_ColumnPropNameInRow="npc_name" msprop:Generator_ColumnPropNameInTable="npc_nameColumn" msprop:Generator_UserColumnName="npc_name" type="xs:string" minOccurs="0" />
+                    <xs:element name="description" msprop:Generator_ColumnVarNameInTable="columndescription" msprop:Generator_ColumnPropNameInRow="description" msprop:Generator_ColumnPropNameInTable="descriptionColumn" msprop:Generator_UserColumnName="description" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ItemsDatabase" msprop:Generator_TableClassName="ItemsDatabaseDataTable" msprop:Generator_TableVarName="tableItemsDatabase" msprop:Generator_RowChangedName="ItemsDatabaseRowChanged" msprop:Generator_TablePropName="ItemsDatabase" msprop:Generator_RowDeletingName="ItemsDatabaseRowDeleting" msprop:Generator_RowChangingName="ItemsDatabaseRowChanging" msprop:Generator_RowEvHandlerName="ItemsDatabaseRowChangeEventHandler" msprop:Generator_RowDeletedName="ItemsDatabaseRowDeleted" msprop:Generator_RowClassName="ItemsDatabaseRow" msprop:Generator_UserTableName="ItemsDatabase" msprop:Generator_RowEvArgName="ItemsDatabaseRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="item_id" msprop:Generator_ColumnVarNameInTable="columnitem_id" msprop:Generator_ColumnPropNameInRow="item_id" msprop:Generator_ColumnPropNameInTable="item_idColumn" msprop:Generator_UserColumnName="item_id" type="xs:string" minOccurs="0" />
+              <xs:element name="Item" msprop:Generator_TableClassName="ItemDataTable" msprop:Generator_TableVarName="tableItem" msprop:Generator_RowChangedName="ItemRowChanged" msprop:Generator_TablePropName="Item" msprop:Generator_RowDeletingName="ItemRowDeleting" msprop:Generator_RowChangingName="ItemRowChanging" msprop:Generator_RowEvHandlerName="ItemRowChangeEventHandler" msprop:Generator_RowDeletedName="ItemRowDeleted" msprop:Generator_RowClassName="ItemRow" msprop:Generator_UserTableName="Item" msprop:Generator_RowEvArgName="ItemRowChangeEvent" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:appinfo>
+                    <msdata:Relationship name="ItemsDatabase_Item" msdata:parent="ItemsDatabase" msdata:child="Item" msdata:parentkey="item_id" msdata:childkey="name" msprop:Generator_UserChildTable="Item" msprop:Generator_ChildPropName="GetItemRows" msprop:Generator_UserRelationName="ItemsDatabase_Item" msprop:Generator_RelationVarName="relationItemsDatabase_Item" msprop:Generator_UserParentTable="ItemsDatabase" msprop:Generator_ParentPropName="ItemsDatabaseRow" />
+                  </xs:appinfo>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="name" msprop:Generator_ColumnVarNameInTable="columnname" msprop:Generator_ColumnPropNameInRow="name" msprop:Generator_ColumnPropNameInTable="nameColumn" msprop:Generator_UserColumnName="name" type="xs:string" minOccurs="0" />
+                    <xs:element name="description" msprop:Generator_ColumnVarNameInTable="columndescription" msprop:Generator_ColumnPropNameInRow="description" msprop:Generator_ColumnPropNameInTable="descriptionColumn" msprop:Generator_UserColumnName="description" type="xs:string" minOccurs="0" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

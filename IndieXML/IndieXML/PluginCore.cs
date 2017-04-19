@@ -1,6 +1,7 @@
 ﻿using IndieXMLIPlugin;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,11 +14,11 @@ namespace IndieXML
     class PluginCore
     {
         // default constructor
-        public PluginCore(DockPanel dp)
+        public PluginCore(DockPanel dp, DataSet ds)
         {
             try
             {
-                LoadPlugins(dp); // we need menus here so we can pass them on in case plugins want to implement menuitems
+                LoadPlugins(dp, ds); // we need menus here so we can pass them on in case plugins want to implement menuitems
             }
             catch (Exception ex)
             {
@@ -26,7 +27,7 @@ namespace IndieXML
             }
         }
 
-        private void LoadPlugins(DockPanel dp)
+        private void LoadPlugins(DockPanel dp, DataSet ds)
         {
             try
             {
