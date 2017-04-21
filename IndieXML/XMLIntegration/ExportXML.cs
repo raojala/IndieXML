@@ -141,19 +141,9 @@ namespace XMLIntegration
                 {
                     string filePath = saveFileDialog.FileName;
 
-                    //if (File.Exists(filePath))
-                    //{
-                    //    File.Delete(filePath);
-                    //}
-
-                    //DataTable dt = ((DataView)dgMain.ItemsSource).ToTable();
-                    //ds.WriteXml(filePath);
-                    //ds.WriteXmlSchema(filePath + "_schema");
-
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Indent = true;
                     settings.IndentChars = "\t";
-                    //settings.ConformanceLevel = ConformanceLevel.Fragment;
 
                     using (StreamWriter sw = new StreamWriter(filePath))
                     using (XmlWriter writer = XmlWriter.Create(sw, settings))
@@ -170,15 +160,10 @@ namespace XMLIntegration
                                 writer.WriteStartElement(MainWindow.DSTables.Relations[i].ChildTable.TableName);
                                 for (int x = 0; x < MainWindow.DSTables.Relations[i].ChildTable.Columns.Count; x++)
                                 {
-                                    MessageBox.Show(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName);
-                                    writer.WriteElementString(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.DSTables.Relations[i].ChildTable.Rows[y][x].ToString());
-
-                                    //// vertaa kirjoitettava columni avaimiin ja kirjoita jos eri
-                                    //if (dc.ColumnName != MainWindow.dataset.Relations[i].ChildTable.Columns[x].ColumnName)
-                                    //{
-                                    //    writer.WriteElementString(MainWindow.dataset.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.dataset.Relations[i].ChildTable.Rows[y][x].ToString());
-                                    //}
-
+                                    if (MainWindow.DSTables.Relations[i].ParentTable.TableName + "_Id" != MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName)
+                                    {
+                                        writer.WriteElementString(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.DSTables.Relations[i].ChildTable.Rows[y][x].ToString());
+                                    }
                                 }
                                 writer.WriteEndElement();
                             }

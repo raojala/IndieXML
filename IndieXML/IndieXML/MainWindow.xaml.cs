@@ -117,15 +117,6 @@ namespace IndieXML
                     trView.Items.Add(rel.ParentTable.ToString());
                     trView.Padding = new Thickness { Right = 10 };
                 }
-
-                //// reset selected item (not working)
-                //for (int i = 0; i < DSTables.Relations.Count; i++)
-                //{
-                //    if (DSTables.Relations[i].ChildTable == dgMainView.DataContext)
-                //    {
-                //        ((TreeViewItem)trView.Items[i]).IsSelected = true;
-                //    }
-                //}
             }
             catch (Exception ex)
             {
@@ -192,9 +183,6 @@ namespace IndieXML
         {
             MessageBox.Show("treeview rightclic Valikko");
         }
-        private void dgMainView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show("datagrid rightclic Valikko");
-        }
+        
     }
 }
