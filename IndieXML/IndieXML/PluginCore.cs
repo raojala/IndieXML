@@ -14,20 +14,19 @@ namespace IndieXML
     class PluginCore
     {
         // default constructor
-        public PluginCore(DockPanel dp, DataSet ds)
+        public PluginCore()
         {
             try
             {
-                LoadPlugins(dp, ds); // we need menus here so we can pass them on in case plugins want to implement menuitems
+                LoadPlugins(); // we need menus here so we can pass them on in case plugins want to implement menuitems
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
 
-        private void LoadPlugins(DockPanel dp, DataSet ds)
+        private void LoadPlugins()
         {
             try
             {
@@ -50,7 +49,7 @@ namespace IndieXML
                         {
                             IPlug plug = (IPlug)Activator.CreateInstance(type);
                             plugins.Add(plug.Name, plug); // store the plugin in dictionary with a keyword, for later use.
-                            plug.Update(dp);
+                            plug.Update();
                         }
                     }
                 }

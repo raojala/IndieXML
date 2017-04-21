@@ -17,15 +17,13 @@ namespace IndieXMLbins
     class loadBin : IPlug
     {
         DataGrid dgMain;
-        DockPanel dpMain;
         StackPanel TopNav;
         TreeView trView;
         public string Name { get { return "loadBin"; } } // name works as a keyvalue in dictionary, must be unique!
-        public void Update(DockPanel dp) // method that gets called in pluginmanager.
+        public void Update() // method that gets called in pluginmanager.
         {
             try
             {
-                dpMain = dp;
                 SetProperties();
                 CreateMenuItem();
             }
@@ -92,31 +90,9 @@ namespace IndieXMLbins
         {
             try
             {
-                foreach (UIElement uiElement in dpMain.Children)
-                {
-                    if (uiElement.GetType() == typeof(StackPanel))
-                    {
-                        StackPanel sp = (StackPanel)uiElement;
-                        if (sp.Name == "TopNav")
-                        {
-                            TopNav = sp;
-                        }
-                    }
-                    else if (uiElement.GetType() == typeof(DataGrid))
-                    {
-                        if (((DataGrid)uiElement).Name == "dgMainView")
-                        {
-                            dgMain = (DataGrid)uiElement;
-                        }
-                    }
-                    else if (uiElement.GetType() == typeof(TreeView))
-                    {
-                        if (((TreeView)uiElement).Name == "trvTables")
-                        {
-                            trView = (TreeView)uiElement;
-                        }
-                    }
-                }
+                TopNav = MainWindow.TopNav;
+                dgMain = MainWindow.dgMain;
+                trView = MainWindow.TrView;
             }
             catch (Exception ex)
             {
@@ -137,10 +113,10 @@ namespace IndieXMLbins
                     try
                     {
                         BinaryFormatter bf = new BinaryFormatter();
-                        MainWindow.dataset = (DataSet)bf.Deserialize(fs);
+                        MainWindow.DSTables = (DataSet)bf.Deserialize(fs);
                         fs.Close();
                         dgMain.Columns.Clear();
-                        dgMain.DataContext = MainWindow.dataset.Relations[0].ChildTable;
+                        dgMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
                     }
                     catch (Exception ex)
                     {

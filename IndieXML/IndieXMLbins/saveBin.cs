@@ -16,14 +16,12 @@ namespace IndieXMLbins
 {
     class saveBin : IPlug
     {
-        DockPanel dpMain;
         StackPanel TopNav;
         public string Name { get { return "saveBin"; } } // name works as a keyvalue in dictionary, must be unique!
-        public void Update(DockPanel dp) // method that gets called in pluginmanager.
+        public void Update() // method that gets called in pluginmanager.
         {
             try
             {
-                dpMain = dp;
                 SetProperties();
                 CreateMenuItem();
                 
@@ -91,17 +89,7 @@ namespace IndieXMLbins
         {
             try
             {
-                foreach (UIElement uiElement in dpMain.Children)
-                {
-                    if (uiElement.GetType() == typeof(StackPanel))
-                    {
-                        StackPanel sp = (StackPanel)uiElement;
-                        if (sp.Name == "TopNav")
-                        {
-                            TopNav = sp;
-                        }
-                    }
-                }
+                TopNav = MainWindow.TopNav;
             }
             catch (Exception ex)
             {
@@ -120,13 +108,13 @@ namespace IndieXMLbins
                 {
                     string filePath = saveFileDialog.FileName;
 
-                    MainWindow.dataset.RemotingFormat = SerializationFormat.Binary;
+                    MainWindow.DSTables.RemotingFormat = SerializationFormat.Binary;
 
                     FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
                     try
                     {
                         BinaryFormatter bf = new BinaryFormatter();
-                        bf.Serialize(fs, MainWindow.dataset);
+                        bf.Serialize(fs, MainWindow.DSTables);
                         fs.Close();
                     }
                     catch (Exception ex)

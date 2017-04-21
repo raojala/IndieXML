@@ -12,7 +12,7 @@
     </Window.Resources>    
     
     <DockPanel x:Name="dpMain" LastChildFill="True">
-        <StackPanel x:Name="TopNav" Orientation="Horizontal" DockPanel.Dock="Top">
+        <StackPanel x:Name="spTopNav" Orientation="Horizontal" DockPanel.Dock="Top">
             <Menu x:Name="FileMenu">
                 <MenuItem x:Name="miFile" Header="_File">
                     <MenuItem x:Name="miNew" Header="_New" Click="miNew_Click" />
@@ -22,14 +22,19 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <StackPanel x:Name="BotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
-        <StackPanel x:Name="MainContent" DockPanel.Dock="Bottom" />
-        <TreeView x:Name="trvTables" DockPanel.Dock="Left" SelectedItemChanged="trvTables_SelectedItemChanged"/>
+        <StackPanel x:Name="spBotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
+        <StackPanel x:Name="spMainContent" DockPanel.Dock="Bottom" />
+        <TreeView x:Name="trvTables" 
+                  DockPanel.Dock="Left" 
+                  SelectedItemChanged="trvTables_SelectedItemChanged" 
+                  MouseRightButtonUp="trvTables_MouseRightButtonUp"/>
         <DataGrid x:Name="dgMainView" 
                   AutoGenerateColumns="True" 
                   CanUserAddRows="True"
                   IsReadOnly="False"
-                  ItemsSource="{Binding}" DataContextChanged="dgMainView_DataContextChanged"/>
+                  ItemsSource="{Binding}" 
+                  DataContextChanged="dgMainView_DataContextChanged" 
+                  MouseRightButtonUp="dgMainView_MouseRightButtonUp" AutoGeneratingColumn="dgMainView_AutoGeneratingColumn"/>
     </DockPanel>
 
 

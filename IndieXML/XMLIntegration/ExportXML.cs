@@ -3,6 +3,7 @@ using IndieXMLIPlugin;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,17 +17,28 @@ namespace XMLIntegration
     class ExportXML : IPlug
     {
         public string Name { get { return "ExportXML"; } }
-        StackPanel sp = new StackPanel();
-        public void Update(DockPanel dp)
+        StackPanel TopNav;
+        public void Update()
         {
             try
             {
-                SetProperties(dp);
+                SetProperties();
                 CreateMenuItem();
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
 
+        private void SetProperties()
+        {
+            try
+            {
+                TopNav = MainWindow.TopNav;
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
@@ -38,14 +50,14 @@ namespace XMLIntegration
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
                 bool found = false;
-                for (int i = 0; i < sp.Children.Count; i++)
+                for (int i = 0; i < TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (sp.Children[i].GetType() == typeof(Menu))
+                    if (TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)sp.Children[i];
+                        m = (Menu)TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -95,29 +107,7 @@ namespace XMLIntegration
                 throw ex;
             }
         }
-
-        private void SetProperties(DockPanel dock)
-        {
-            try
-            {
-                foreach (UIElement uiElement in dock.Children)
-                {
-                    if (uiElement.GetType() == typeof(StackPanel))
-                    {
-                        StackPanel temp = (StackPanel)uiElement;
-                        if (temp.Name == "TopNav")
-                        {
-                            sp = temp;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        
         void ExportXMLEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -134,6 +124,17 @@ namespace XMLIntegration
         {
             try
             {
+                // list all the primary keys
+                List<DataColumn> lKeys = new List<DataColumn>();
+                foreach (DataTable dt in MainWindow.DSTables.Tables)
+                {
+                    foreach (DataColumn dc in dt.PrimaryKey)
+                    {
+                        lKeys.Add(dc);
+                    }
+                }
+                DataColumn[] primaryKeys = lKeys.ToArray();
+
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 if (saveFileDialog.ShowDialog() == true)
@@ -152,23 +153,32 @@ namespace XMLIntegration
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.Indent = true;
                     settings.IndentChars = "\t";
-                    settings.ConformanceLevel = ConformanceLevel.Fragment;
+                    //settings.ConformanceLevel = ConformanceLevel.Fragment;
 
                     using (StreamWriter sw = new StreamWriter(filePath))
                     using (XmlWriter writer = XmlWriter.Create(sw, settings))
                     {
-                        writer.WriteStartElement(MainWindow.dataset.DataSetName);
+                        // writer.WriteStartDocument(true);
+                        writer.WriteStartElement(MainWindow.DSTables.DataSetName);
 
-                        for (int i = 0; i < MainWindow.dataset.Relations.Count; i++)
+                        for (int i = 0; i < MainWindow.DSTables.Relations.Count; i++)
                         {
-                            writer.WriteStartElement(MainWindow.dataset.Relations[i].ParentTable.TableName);
+                            writer.WriteStartElement(MainWindow.DSTables.Relations[i].ParentTable.TableName);
 
-                            for (int y = 0; y < MainWindow.dataset.Relations[i].ChildTable.Rows.Count; y++)
+                            for (int y = 0; y < MainWindow.DSTables.Relations[i].ChildTable.Rows.Count; y++)
                             {
-                                writer.WriteStartElement(MainWindow.dataset.Relations[i].ChildTable.TableName);
-                                for (int x = 0; x < MainWindow.dataset.Relations[i].ChildTable.Columns.Count; x++)
+                                writer.WriteStartElement(MainWindow.DSTables.Relations[i].ChildTable.TableName);
+                                for (int x = 0; x < MainWindow.DSTables.Relations[i].ChildTable.Columns.Count; x++)
                                 {
-                                    writer.WriteElementString(MainWindow.dataset.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.dataset.Relations[i].ChildTable.Rows[y][x].ToString());
+                                    MessageBox.Show(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName);
+                                    writer.WriteElementString(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.DSTables.Relations[i].ChildTable.Rows[y][x].ToString());
+
+                                    //// vertaa kirjoitettava columni avaimiin ja kirjoita jos eri
+                                    //if (dc.ColumnName != MainWindow.dataset.Relations[i].ChildTable.Columns[x].ColumnName)
+                                    //{
+                                    //    writer.WriteElementString(MainWindow.dataset.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.dataset.Relations[i].ChildTable.Rows[y][x].ToString());
+                                    //}
+
                                 }
                                 writer.WriteEndElement();
                             }

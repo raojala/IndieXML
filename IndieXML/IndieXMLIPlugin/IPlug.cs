@@ -15,6 +15,6 @@ namespace IndieXMLIPlugin
     public interface IPlug
     {
         string Name { get; } // name works as a keyvalue in dictionary, must be unique!
-        void Update(DockPanel dp); // method that gets called in pluginmanager.
+        void Update(); // method that gets called in pluginmanager.
     }
 }

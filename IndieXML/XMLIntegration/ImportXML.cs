@@ -15,13 +15,14 @@ namespace XMLIntegration
     class ImportXML : IPlug
     {
         DataGrid dgMain;
+        StackPanel TopNav;
         public string Name { get { return "ImportXML"; } }
-        StackPanel sp;
-        public void Update(DockPanel dp)
+
+        public void Update()
         {
             try
             {
-                SetProperties(dp);
+                SetProperties();
                 CreateMenuItem();
             }
             catch (Exception ex)
@@ -37,14 +38,14 @@ namespace XMLIntegration
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
                 bool found = false;
-                for (int i = 0; i < sp.Children.Count; i++)
+                for (int i = 0; i < TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (sp.Children[i].GetType() == typeof(Menu))
+                    if (TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)sp.Children[i];
+                        m = (Menu)TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -95,28 +96,12 @@ namespace XMLIntegration
             }
         }
 
-        private void SetProperties(DockPanel dock)
+        private void SetProperties()
         {
             try
             {
-                foreach (UIElement uiElement in dock.Children)
-                {
-                    if (uiElement.GetType() == typeof(StackPanel))
-                    {
-                        StackPanel temp = (StackPanel)uiElement;
-                        if (temp.Name == "TopNav")
-                        {
-                            sp = temp;
-                        }
-                    }
-                    else if (uiElement.GetType() == typeof(DataGrid))
-                    {
-                        if (((DataGrid)uiElement).Name == "dgMainView")
-                        {
-                            dgMain = (DataGrid)uiElement;
-                        }
-                    }
-                }
+                TopNav = MainWindow.TopNav;
+                dgMain = MainWindow.dgMain;
             }
             catch (Exception ex)
             {
@@ -141,24 +126,25 @@ namespace XMLIntegration
         {
             try
             {
+                DataSet ds = new DataSet();
+
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "XML Files (*.xml)|*.xml";
-
                 if (openFileDialog.ShowDialog() == true)
                 {
-                    DataSet ds = new DataSet();
                     ds.ReadXml(openFileDialog.FileName);
-                    MainWindow.dataset = ds;
+                }
 
-                    // MainWindow.dataset.ReadXml(openFileDialog.FileName);
-
+                if (ds.Relations.Count < 1)
+                {
+                    // no relations
+                    // what if there are nested relations?
+                }
+                else
+                {
+                    MainWindow.DSTables = ds;
                     dgMain.Columns.Clear();
-                    dgMain.DataContext = MainWindow.dataset.Relations[0].ChildTable;
-
-                    //if (MainWindow.dataset.Relations.Count <= 0)
-                    //{
-                    //    //ExportXml();
-                    //}
+                    dgMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
                 }
             }
             catch (Exception ex)
