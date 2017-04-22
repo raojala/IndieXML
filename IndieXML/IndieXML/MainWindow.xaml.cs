@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -28,7 +29,19 @@ namespace IndieXML
         private static StackPanel topNav;
         private static StackPanel botNav;
         private static DataGrid dgmain;
+        private static TextBox tbName;
 
+        public static TextBox TBName
+        {
+            get
+            {
+                return tbName;
+            }
+            set
+            {
+                tbName = value;
+            }
+        }
         public static DataGrid dgMain
         {
             get { return dgmain; }
@@ -56,7 +69,7 @@ namespace IndieXML
         {
             get { return trView; }
         }
-
+        
         public MainWindow()
         {
             try
@@ -74,6 +87,7 @@ namespace IndieXML
         {
             try
             {
+                tbName = txbDatabaseName;
                 botNav = spBotNav;
                 topNav = spTopNav;
                 trView = trvTables;
@@ -117,6 +131,8 @@ namespace IndieXML
                     trView.Items.Add(rel.ParentTable.ToString());
                     trView.Padding = new Thickness { Right = 10 };
                 }
+                cmbColumns.DataContext = ((DataTable)dgmain.DataContext);
+                cmbColumns.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -183,6 +199,6 @@ namespace IndieXML
         {
             MessageBox.Show("treeview rightclic Valikko");
         }
-        
+
     }
 }

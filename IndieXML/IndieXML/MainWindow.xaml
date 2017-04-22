@@ -25,14 +25,17 @@
         <StackPanel x:Name="spBotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
         <StackPanel x:Name="spMainContent" DockPanel.Dock="Bottom" />
         <DockPanel LastChildFill="True" DockPanel.Dock="Left">
-            <TextBox x:Name="txbDatabaseName" Margin="2,2,2,0" MinWidth="50" Padding="2" Text="Database name" DockPanel.Dock="Top"/>
+            <TextBox x:Name="txbDatabaseName" Margin="2,2,2,0" MinWidth="85" MaxWidth="120" Padding="2" DockPanel.Dock="Top"
+                     Text="Database Name" />
             <TreeView x:Name="trvTables" Margin="2"
                   SelectedItemChanged="trvTables_SelectedItemChanged" 
-                  MouseRightButtonUp="trvTables_MouseRightButtonUp"/>
+                  MouseRightButtonUp="trvTables_MouseRightButtonUp">
+                <TreeViewItem />
+            </TreeView>
         </DockPanel>
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top" Margin="0,2,2,0">
-                <ComboBox x:Name="cmbColumns" MinWidth="55"/>
+                <ComboBox x:Name="cmbColumns" MinWidth="55" ItemsSource="{Binding Columns}" DisplayMemberPath="ColumnName"/>
                 <TextBox x:Name="txbSearch" Margin="2,0,0,0"/>
             </DockPanel>
             <DataGrid x:Name="dgMainView" Margin="0,2,2,2"

@@ -127,7 +127,6 @@ namespace XMLIntegration
             try
             {
                 DataSet ds = new DataSet();
-
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 if (openFileDialog.ShowDialog() == true)

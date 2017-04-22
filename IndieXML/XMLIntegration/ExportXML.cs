@@ -124,17 +124,8 @@ namespace XMLIntegration
         {
             try
             {
-                // list all the primary keys
-                List<DataColumn> lKeys = new List<DataColumn>();
-                foreach (DataTable dt in MainWindow.DSTables.Tables)
-                {
-                    foreach (DataColumn dc in dt.PrimaryKey)
-                    {
-                        lKeys.Add(dc);
-                    }
-                }
-                DataColumn[] primaryKeys = lKeys.ToArray();
-
+                string databasename = MainWindow.TBName.Text;
+                databasename = databasename.Replace(" ", "_");
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
                 if (saveFileDialog.ShowDialog() == true)
@@ -149,7 +140,7 @@ namespace XMLIntegration
                     using (XmlWriter writer = XmlWriter.Create(sw, settings))
                     {
                         // writer.WriteStartDocument(true);
-                        writer.WriteStartElement(MainWindow.DSTables.DataSetName);
+                        writer.WriteStartElement(databasename);
 
                         for (int i = 0; i < MainWindow.DSTables.Relations.Count; i++)
                         {
