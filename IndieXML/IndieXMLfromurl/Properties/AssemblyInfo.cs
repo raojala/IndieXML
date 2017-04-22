@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IndieXMLcore")]
+[assembly: AssemblyTitle("IndieXMLfromurl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IndieXMLcore")]
+[assembly: AssemblyProduct("IndieXMLfromurl")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("a5813c45-dfe8-45a7-a813-138c41786325")]
+[assembly: Guid("f14f5f1f-d9df-4803-8e27-78c01da14579")]
 
 // Version information for an assembly consists of the following four values:
 //

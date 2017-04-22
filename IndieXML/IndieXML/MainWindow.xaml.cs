@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,23 +24,181 @@ namespace IndieXML
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static DataSet dsTables = new DataSet();
+        private static TreeView trView;
+        private static StackPanel topNav;
+        private static StackPanel botNav;
+        private static DataGrid dgmain;
+        private static TextBox tbName;
+
+        public static TextBox TBName
+        {
+            get
+            {
+                return tbName;
+            }
+            set
+            {
+                tbName = value;
+            }
+        }
+        public static DataGrid dgMain
+        {
+            get { return dgmain; }
+        }
+        public static StackPanel BotNav
+        {
+            get { return botNav; }
+        }
+        public static StackPanel TopNav
+        {
+            get { return topNav; }
+        }
+        public static DataSet DSTables
+        {
+            get
+            {
+                return dsTables;
+            }
+            set
+            {
+                dsTables = value;
+            }
+        }
+        public static TreeView TrView
+        {
+            get { return trView; }
+        }
+        
         public MainWindow()
         {
-            InitializeComponent();
-            OnStart();
+            try
+            {
+                InitializeComponent();
+                OnStart();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
         
         public void OnStart ()
         {
-            
             try
             {
-                PluginCore pluginCore = new PluginCore(dpMain);
+                tbName = txbDatabaseName;
+                botNav = spBotNav;
+                topNav = spTopNav;
+                trView = trvTables;
+                dgmain = dgMainView;
+                dgMainView.LoadingRow += DataGrid_LoadingRow;
+                InitDataGrid();
+                PluginCore pluginCore = new PluginCore();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error"); // virheraportti palaute ikkuna jossa lyhyt syöte kenttä jonka ohjelma lähettää spostiin login kanssa?
+                throw ex;
             }
         }
+
+        // event method to add rownumbers
+        void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        }
+
+        // application shutdown event for quit menuitem
+        private void ApplicationQuit(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void dgMainView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            try
+            {
+                trView.Items.Clear();
+                foreach (DataRelation rel in DSTables.Relations)
+                {
+                    trView.Items.Add(rel.ParentTable.ToString());
+                    trView.Padding = new Thickness { Right = 10 };
+                }
+                cmbColumns.DataContext = ((DataTable)dgmain.DataContext);
+                cmbColumns.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private void InitDataGrid()
+        {
+            try
+            {
+                DSTables.ReadXml("default.xml");
+                dgMainView.DataContext = DSTables.Relations[0].ChildTable;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        // set datagrid datacontext to match the item selected in the treeview item
+        private void trvTables_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                for (int i = 0; i < trView.Items.Count; i++)
+                {
+                    if (trView.Items[i] == ((TreeView)sender).SelectedItem)
+                    {
+                        dgMainView.DataContext = DSTables.Relations[i].ChildTable;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        // start new instance of IndieXML if new is pressed
+        private void miNew_Click(object sender, RoutedEventArgs e)
+        {
+            Process p = new Process();
+            p.StartInfo.FileName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            p.Start();
+        }
+
+        // check if autogenerated column is the key and cancel it 
+        private void dgMainView_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            foreach (DataTable dt in DSTables.Tables)
+            {
+                foreach (DataColumn dc in dt.PrimaryKey)
+                {
+                    if (e.Column.Header.ToString() == dc.ColumnName)
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            }
+        }
+
+        private void trvTables_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("treeview rightclic Valikko");
+        }
+
     }
 }
