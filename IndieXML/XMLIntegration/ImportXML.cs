@@ -14,15 +14,11 @@ namespace XMLIntegration
 {
     class ImportXML : IPlug
     {
-        DataGrid dgMain;
-        StackPanel TopNav;
         public string Name { get { return "ImportXML"; } }
-
         public void Update()
         {
             try
             {
-                SetProperties();
                 CreateMenuItem();
             }
             catch (Exception ex)
@@ -31,6 +27,7 @@ namespace XMLIntegration
             }
         }
 
+        // create XML menu button if it does not exist and create an import xml button under it.
         private void CreateMenuItem()
         {
             try
@@ -38,14 +35,14 @@ namespace XMLIntegration
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
                 bool found = false;
-                for (int i = 0; i < TopNav.Children.Count; i++)
+                for (int i = 0; i < MainWindow.TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (TopNav.Children[i].GetType() == typeof(Menu))
+                    if (MainWindow.TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)TopNav.Children[i];
+                        m = (Menu)MainWindow.TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -61,6 +58,7 @@ namespace XMLIntegration
                                         if (mi2 != null)
                                             break;
 
+                                        // found parent
                                         if (((MenuItem)mi.Items[y]).Name == "miXML")
                                         {
                                             mi2 = ((MenuItem)mi.Items[y]);
@@ -73,18 +71,17 @@ namespace XMLIntegration
                     }
                 }
                 
+                // parent was not found so we create one.
                 if (found == false)
                 {
-                    MenuItem menuItem = new MenuItem();
-                    menuItem.Name = "miXML";
-                    menuItem.Header = "_XML";
+                    MenuItem menuItem = new MenuItem { Name = "miXML", Header = "_XML" };
                     if (mi != null && mi.Name == "miFile")
                         mi.Items.Insert(mi.Items.Count - 1, menuItem);
                     mi2 = menuItem;
                 }
 
-                MenuItem getXML = new MenuItem();
-                getXML.Header = "_Import as XML";
+                // create the button
+                MenuItem getXML = new MenuItem { Header = "_Import as XML" };
                 getXML.Click += ImportXMLEvent;
                 if (mi2 != null)
                     mi2.Items.Add(getXML);
@@ -96,19 +93,7 @@ namespace XMLIntegration
             }
         }
 
-        private void SetProperties()
-        {
-            try
-            {
-                TopNav = MainWindow.TopNav;
-                dgMain = MainWindow.dgMain;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        // event that gets called when import xml button is pressed
         void ImportXMLEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -121,14 +106,14 @@ namespace XMLIntegration
             }
         }
 
-        // not working
+        // read the xml into a dataset and place the child of the first relation as a datacontext
+        // also set the text value of our database name textbox to match the name of the dataset.
         private void ImportXml()
         {
             try
             {
                 DataSet ds = new DataSet();
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "XML Files (*.xml)|*.xml";
+                OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "XML Files (*.xml)|*.xml" };
                 if (openFileDialog.ShowDialog() == true)
                 {
                     ds.ReadXml(openFileDialog.FileName);
@@ -142,8 +127,9 @@ namespace XMLIntegration
                 else
                 {
                     MainWindow.DSTables = ds;
-                    dgMain.Columns.Clear();
-                    dgMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
+                    MainWindow.DGMain.Columns.Clear();
+                    MainWindow.DGMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
+                    MainWindow.TBName = ds.DataSetName;
                 }
             }
             catch (Exception ex)

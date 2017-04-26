@@ -14,17 +14,14 @@ using System.Windows.Controls;
 
 namespace IndieXMLbins
 {
-    class saveBin : IPlug
+    class SaveBin : IPlug
     {
-        StackPanel TopNav;
         public string Name { get { return "saveBin"; } } // name works as a keyvalue in dictionary, must be unique!
         public void Update() // method that gets called in pluginmanager.
         {
             try
             {
-                SetProperties();
                 CreateMenuItem();
-                
             }
             catch (Exception ex)
             {
@@ -32,20 +29,21 @@ namespace IndieXMLbins
             }
         }
 
+        // same as in loadbin class.
         private void CreateMenuItem()
         {
             try
             {
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
-                for (int i = 0; i < TopNav.Children.Count; i++)
+                for (int i = 0; i < MainWindow.TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (TopNav.Children[i].GetType() == typeof(Menu))
+                    if (MainWindow.TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)TopNav.Children[i];
+                        m = (Menu)MainWindow.TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -72,9 +70,8 @@ namespace IndieXMLbins
                     }
                 }
 
-                MenuItem saveFile = new MenuItem();
-                saveFile.Header = "_Save Binary";
-                saveFile.Click += saveFileEvent;
+                MenuItem saveFile = new MenuItem { Header = "_Save Binary" };
+                saveFile.Click += SaveFileEvent;
                 if (mi2 != null)
                     mi2.Items.Add(saveFile);
             }
@@ -84,30 +81,19 @@ namespace IndieXMLbins
                 throw ex;
             }
         }
-
-        private void SetProperties()
-        {
-            try
-            {
-                TopNav = MainWindow.TopNav;
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
+        
+        // serialize dataset to binary file.
         private void SaveFile()
         {
             try
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Binary Files (*.bin)|*.bin";
+                SaveFileDialog saveFileDialog = new SaveFileDialog { Filter = "Binary Files (*.bin)|*.bin" };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string filePath = saveFileDialog.FileName;
 
+                    // This is important to change, otherwise writing out larger files will cause it to fail.
+                    // This should be defaulted to xml format in our case.
                     MainWindow.DSTables.RemotingFormat = SerializationFormat.Binary;
 
                     FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate);
@@ -136,7 +122,8 @@ namespace IndieXMLbins
             }
         }
 
-        void saveFileEvent(object sender, RoutedEventArgs e)
+        // this event gets called when that export xml button is pressed
+        void SaveFileEvent(object sender, RoutedEventArgs e)
         {
             try
             {

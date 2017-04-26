@@ -14,17 +14,13 @@ using System.Windows.Controls;
 
 namespace IndieXMLbins
 {
-    class loadBin : IPlug
+    class LoadBin : IPlug
     {
-        DataGrid dgMain;
-        StackPanel TopNav;
-        TreeView trView;
         public string Name { get { return "loadBin"; } } // name works as a keyvalue in dictionary, must be unique!
         public void Update() // method that gets called in pluginmanager.
         {
             try
             {
-                SetProperties();
                 CreateMenuItem();
             }
             catch (Exception ex)
@@ -33,20 +29,23 @@ namespace IndieXMLbins
             }
         }
 
+        // Push menuitem to mainwindow file menu
         private void CreateMenuItem ()
         {
             try
             {
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
-                for (int i = 0; i < TopNav.Children.Count; i++)
+
+                // find the file menu from top navigation children
+                for (int i = 0; i < MainWindow.TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (TopNav.Children[i].GetType() == typeof(Menu))
+                    if (MainWindow.TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)TopNav.Children[i];
+                        m = (Menu)MainWindow.TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -72,10 +71,9 @@ namespace IndieXMLbins
                         }
                     }
                 }
-                
-                MenuItem loadFile = new MenuItem();
-                loadFile.Header = "_Load Binary";
-                loadFile.Click += loadFileEvent;
+
+                MenuItem loadFile = new MenuItem { Header = "_Load Binary" };
+                loadFile.Click += LoadFileEvent;
                 if (mi2 != null)
                     mi2.Items.Add(loadFile);
             }
@@ -86,26 +84,12 @@ namespace IndieXMLbins
             }
         }
 
-        private void SetProperties()
-        {
-            try
-            {
-                TopNav = MainWindow.TopNav;
-                dgMain = MainWindow.dgMain;
-                trView = MainWindow.TrView;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        // load file and deserialize it into a dataset so we can display it in a datagrid.
         private void LoadFile()
         {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Binary Files (*.bin)|*.bin";
+                OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Binary Files (*.bin)|*.bin" };
                 if (openFileDialog.ShowDialog() == true)
                 {
                     string filePath = openFileDialog.FileName;
@@ -115,8 +99,8 @@ namespace IndieXMLbins
                         BinaryFormatter bf = new BinaryFormatter();
                         MainWindow.DSTables = (DataSet)bf.Deserialize(fs);
                         fs.Close();
-                        dgMain.Columns.Clear();
-                        dgMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
+                        MainWindow.DGMain.Columns.Clear();
+                        MainWindow.DGMain.DataContext = MainWindow.DSTables.Relations[0].ChildTable;
                     }
                     catch (Exception ex)
                     {
@@ -137,9 +121,17 @@ namespace IndieXMLbins
             }
         }
 
-        void loadFileEvent(object sender, RoutedEventArgs e)
+        // event that gets called when load bin is pressed
+        void LoadFileEvent(object sender, RoutedEventArgs e)
         {
-            LoadFile();
+            try
+            {
+                LoadFile();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

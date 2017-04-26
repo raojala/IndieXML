@@ -15,7 +15,7 @@
         <StackPanel x:Name="spTopNav" Orientation="Horizontal" DockPanel.Dock="Top">
             <Menu x:Name="FileMenu" >
                 <MenuItem x:Name="miFile" Header="_File">
-                    <MenuItem x:Name="miNew" Header="_New" Click="miNew_Click" />
+                    <MenuItem x:Name="miNew" Header="_New" Click="MenuItemNew_Click" />
                     <MenuItem x:Name="miSave" Header="_Save" />
                     <MenuItem x:Name="miLoad" Header="_Load" />
                     <MenuItem x:Name="miQuit" Header="_Quit" Click="ApplicationQuit"/>
@@ -28,8 +28,8 @@
             <TextBox x:Name="txbDatabaseName" Margin="2,2,2,0" MinWidth="85" MaxWidth="120" Padding="2" DockPanel.Dock="Top"
                      Text="Database Name" />
             <TreeView x:Name="trvTables" Margin="2"
-                  SelectedItemChanged="trvTables_SelectedItemChanged" 
-                  MouseRightButtonUp="trvTables_MouseRightButtonUp">
+                  SelectedItemChanged="TRVTables_SelectedItemChanged" 
+                  MouseRightButtonUp="TRVTables_MouseRightButtonUp">
                 <TreeViewItem />
             </TreeView>
         </DockPanel>
@@ -43,8 +43,8 @@
                   CanUserAddRows="True"
                   IsReadOnly="False"
                   ItemsSource="{Binding}" 
-                  DataContextChanged="dgMainView_DataContextChanged" 
-                  AutoGeneratingColumn="dgMainView_AutoGeneratingColumn"/>
+                  DataContextChanged="DGMainView_DataContextChanged" 
+                  AutoGeneratingColumn="DGMainView_AutoGeneratingColumn"/>
             
         </DockPanel>
         

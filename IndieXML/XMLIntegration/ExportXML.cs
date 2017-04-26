@@ -17,12 +17,10 @@ namespace XMLIntegration
     class ExportXML : IPlug
     {
         public string Name { get { return "ExportXML"; } }
-        StackPanel TopNav;
         public void Update()
         {
             try
             {
-                SetProperties();
                 CreateMenuItem();
             }
             catch (Exception ex)
@@ -31,18 +29,7 @@ namespace XMLIntegration
             }
         }
 
-        private void SetProperties()
-        {
-            try
-            {
-                TopNav = MainWindow.TopNav;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+        // create XML menu button if it does not exist and create an export xml button under it.
         private void CreateMenuItem()
         {
             try
@@ -50,14 +37,14 @@ namespace XMLIntegration
                 Menu m = new Menu();
                 MenuItem mi = new MenuItem(), mi2 = null;
                 bool found = false;
-                for (int i = 0; i < TopNav.Children.Count; i++)
+                for (int i = 0; i < MainWindow.TopNav.Children.Count; i++)
                 {
                     if (mi2 != null)
                         break;
 
-                    if (TopNav.Children[i].GetType() == typeof(Menu))
+                    if (MainWindow.TopNav.Children[i].GetType() == typeof(Menu))
                     {
-                        m = (Menu)TopNav.Children[i];
+                        m = (Menu)MainWindow.TopNav.Children[i];
                         if (m.Name == "FileMenu")
                         {
                             for (int x = 0; x < m.Items.Count; x++)
@@ -73,6 +60,7 @@ namespace XMLIntegration
                                         if (mi2 != null)
                                             break;
 
+                                        // found parent
                                         if (((MenuItem)mi.Items[y]).Name == "miXML")
                                         {
                                             mi2 = ((MenuItem)mi.Items[y]);
@@ -85,18 +73,17 @@ namespace XMLIntegration
                     }
                 }
 
+                // parent was not found so we create one.
                 if (found == false)
                 {
-                    MenuItem menuItem = new MenuItem();
-                    menuItem.Name = "miXML";
-                    menuItem.Header = "_XML";
+                    MenuItem menuItem = new MenuItem { Name = "miXML", Header = "_XML" };
                     if (mi != null && mi.Name == "miFile")
                         mi.Items.Insert(mi.Items.Count - 1, menuItem);
                     mi2 = menuItem;
                 }
 
-                MenuItem setXML = new MenuItem();
-                setXML.Header = "_Export as XML";
+                // create the button
+                MenuItem setXML = new MenuItem { Header = "_Export as XML" };
                 setXML.Click += ExportXMLEvent;
                 if (mi2 != null)
                     mi2.Items.Add(setXML);
@@ -108,6 +95,7 @@ namespace XMLIntegration
             }
         }
         
+        // this event gets called when import xml key is pressed
         void ExportXMLEvent(object sender, RoutedEventArgs e)
         {
             try
@@ -120,26 +108,29 @@ namespace XMLIntegration
             }
         }
 
+        // oh boy this is a doosey....
+        // get database name from database textbox and parse it to a proper format. each space is underscore.
+        // then, write each database concept line by line.
         private void ExportXml()
         {
             try
             {
-                string databasename = MainWindow.TBName.Text;
+                // database name
+                string databasename = MainWindow.TBName;
                 databasename = databasename.Replace(" ", "_");
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "XML Files (*.xml)|*.xml";
+
+                // save
+                SaveFileDialog saveFileDialog = new SaveFileDialog { Filter = "XML Files (*.xml)|*.xml" };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     string filePath = saveFileDialog.FileName;
 
-                    XmlWriterSettings settings = new XmlWriterSettings();
-                    settings.Indent = true;
-                    settings.IndentChars = "\t";
+                    // tell the writer that indentation is enabled, and that the indent is tab key press
+                    XmlWriterSettings settings = new XmlWriterSettings { Indent = true, IndentChars = "\t" };
 
                     using (StreamWriter sw = new StreamWriter(filePath))
                     using (XmlWriter writer = XmlWriter.Create(sw, settings))
                     {
-                        // writer.WriteStartDocument(true);
                         writer.WriteStartElement(databasename);
 
                         for (int i = 0; i < MainWindow.DSTables.Relations.Count; i++)
@@ -151,8 +142,10 @@ namespace XMLIntegration
                                 writer.WriteStartElement(MainWindow.DSTables.Relations[i].ChildTable.TableName);
                                 for (int x = 0; x < MainWindow.DSTables.Relations[i].ChildTable.Columns.Count; x++)
                                 {
+                                    // compare a column to a parentname added with "_Id" to confirm it is not a primary key column before write.
                                     if (MainWindow.DSTables.Relations[i].ParentTable.TableName + "_Id" != MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName)
                                     {
+                                        // write the line.
                                         writer.WriteElementString(MainWindow.DSTables.Relations[i].ChildTable.Columns[x].ColumnName, MainWindow.DSTables.Relations[i].ChildTable.Rows[y][x].ToString());
                                     }
                                 }
