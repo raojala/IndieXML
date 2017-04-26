@@ -6,23 +6,48 @@
         xmlns:local="clr-namespace:IndieXML"
         mc:Ignorable="d"
         Title="IndieXML" Height="350" Width="525" x:Name="iXMLMain">
-    <!--<Grid>
-        -->
-    <!-- Menu definitions -->
-    <!--
-        <StackPanel x:Name="TopNav" Orientation="Horizontal" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="25" VerticalAlignment="Top"/>
-        <StackPanel Margin="2,25,2,25" x:Name="MainContent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-        <StackPanel x:Name="BotNav" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="25" VerticalAlignment="Bottom" />
-    </Grid>-->
 
+    <Window.Resources>
+         
+    </Window.Resources>    
+    
     <DockPanel x:Name="dpMain" LastChildFill="True">
-        <StackPanel x:Name="TopNav" Orientation="Horizontal" DockPanel.Dock="Top"/>
-        <StackPanel x:Name="BotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
-        <StackPanel x:Name="MainContent" DockPanel.Dock="Bottom" />
-        <DataGrid x:Name="dgMainView" 
+        <StackPanel x:Name="spTopNav" Orientation="Horizontal" DockPanel.Dock="Top">
+            <Menu x:Name="FileMenu" >
+                <MenuItem x:Name="miFile" Header="_File">
+                    <MenuItem x:Name="miNew" Header="_New" Click="miNew_Click" />
+                    <MenuItem x:Name="miSave" Header="_Save" />
+                    <MenuItem x:Name="miLoad" Header="_Load" />
+                    <MenuItem x:Name="miQuit" Header="_Quit" Click="ApplicationQuit"/>
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+        <StackPanel x:Name="spBotNav" Orientation="Horizontal" DockPanel.Dock="Bottom"/>
+        <StackPanel x:Name="spMainContent" DockPanel.Dock="Bottom" />
+        <DockPanel LastChildFill="True" DockPanel.Dock="Left">
+            <TextBox x:Name="txbDatabaseName" Margin="2,2,2,0" MinWidth="85" MaxWidth="120" Padding="2" DockPanel.Dock="Top"
+                     Text="Database Name" />
+            <TreeView x:Name="trvTables" Margin="2"
+                  SelectedItemChanged="trvTables_SelectedItemChanged" 
+                  MouseRightButtonUp="trvTables_MouseRightButtonUp">
+                <TreeViewItem />
+            </TreeView>
+        </DockPanel>
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Top" Margin="0,2,2,0">
+                <ComboBox x:Name="cmbColumns" MinWidth="55" ItemsSource="{Binding Columns}" DisplayMemberPath="ColumnName"/>
+                <TextBox x:Name="txbSearch" Margin="2,0,0,0"/>
+            </DockPanel>
+            <DataGrid x:Name="dgMainView" Margin="0,2,2,2"
                   AutoGenerateColumns="True" 
-                  CanUserAddRows="False"
-                  IsReadOnly="False"/>
+                  CanUserAddRows="True"
+                  IsReadOnly="False"
+                  ItemsSource="{Binding}" 
+                  DataContextChanged="dgMainView_DataContextChanged" 
+                  AutoGeneratingColumn="dgMainView_AutoGeneratingColumn"/>
+            
+        </DockPanel>
+        
     </DockPanel>
 
 
