@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieXML", "IndieXML\IndieXML.csproj", "{0B139B9E-D2AD-4191-BC2D-B934A1047101}"
 EndProject
@@ -14,6 +14,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieXMLadditions", "IndieXMLadditions\IndieXMLadditions.csproj", "{BCB8E971-FBB8-4BF5-A282-D8E0E22DCBFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieXMLfromurl", "IndieXMLfromurl\IndieXMLfromurl.csproj", "{F14F5F1F-D9DF-4803-8E27-78C01DA14579}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E9122E87-9B3C-479A-B33F-C33DA06E0155}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\Käyttöliittymäohjelmointi-Harjoitustyö-Rami-Ojala-K8412.docx = Documents\Käyttöliittymäohjelmointi-Harjoitustyö-Rami-Ojala-K8412.docx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

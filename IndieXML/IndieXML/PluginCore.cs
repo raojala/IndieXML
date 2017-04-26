@@ -18,7 +18,7 @@ namespace IndieXML
         {
             try
             {
-                LoadPlugins(); // we need menus here so we can pass them on in case plugins want to implement menuitems
+                LoadPlugins();
             }
             catch (Exception ex)
             {
@@ -26,11 +26,13 @@ namespace IndieXML
             }
         }
 
+        // load in our dlls
         private void LoadPlugins()
         {
             try
             {
-                Type pluginType = typeof(IPlug); // what type to look for from assembly types //#CodeID001
+
+                Type pluginType = typeof(IPlug); // what type to look for from assembly types
                 Dictionary<string, IPlug> plugins = new Dictionary<string, IPlug>(); // list of plugins
 
                 // Paths
@@ -42,12 +44,13 @@ namespace IndieXML
                     AssemblyName an = AssemblyName.GetAssemblyName(s); // get assemblyname from dll paths string
                     Assembly assembly = Assembly.Load(an); // load in the assembly
 
-                    Type[] types = assembly.GetTypes(); //#CodeID001, list all types the assembly has
+                    Type[] types = assembly.GetTypes(); //list all types the assembly has
                     foreach (Type type in types)
                     {
-                        if (type.GetInterface(pluginType.FullName) != null && !type.IsAbstract && !type.IsInterface) // check that the type we are looking at is a class that implements our interface and not an abstract class or interface file
+                        // check that the type we are looking at is a class that implements our interface and not an abstract class or interface file
+                        if (type.GetInterface(pluginType.FullName) != null && !type.IsAbstract && !type.IsInterface) 
                         {
-                            IPlug plug = (IPlug)Activator.CreateInstance(type);
+                            IPlug plug = (IPlug)Activator.CreateInstance(type); // run the plugin
                             plugins.Add(plug.Name, plug); // store the plugin in dictionary with a keyword, for later use.
                             plug.Update();
                         }

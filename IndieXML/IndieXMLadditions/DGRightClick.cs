@@ -16,6 +16,8 @@ namespace IndieXMLadditions
     {
         ContextMenu cm = new ContextMenu();
         List<DataColumn> primarykeys = new List<DataColumn>();
+
+        // name of our plugin, this will be passed down to assembly dictionary as a key
         public string Name
         {
             get
@@ -28,8 +30,8 @@ namespace IndieXMLadditions
         {
             try
             {
-                DataGrid dg = MainWindow.dgMain;
-                dg.MouseRightButtonUp += dgMainView_MouseRightButtonUp;
+                DataGrid dg = MainWindow.DGMain;
+                dg.MouseRightButtonUp += DgMainView_MouseRightButtonUp;
             }
             catch (Exception ex)
             {
@@ -38,102 +40,8 @@ namespace IndieXMLadditions
             }
         }
 
-        TextBox txbColumnName;
-        TextBox txbNewName;
-        private void cmItems ()
-        {
-            try
-            {
-                cm.Items.Clear();
-
-                // right click new column button
-                MenuItem addColumn = new MenuItem();
-                addColumn.Header = "_Add Column";
-                //addColumn.Click += addColumnEvent;
-
-                txbColumnName = new TextBox();
-                txbColumnName.LostFocus += addColumnEvent;
-                txbColumnName.MinWidth = 55;
-
-                addColumn.Items.Add(txbColumnName);
-
-                // right click delete columns buttons
-                MenuItem delColumn = new MenuItem();
-                delColumn.Header = "_Delete Column";
-                for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
-                {
-                    if (MainWindow.DSTables.Tables[i] == MainWindow.dgMain.DataContext)
-                    {
-                        for (int ii = 0; ii < MainWindow.DSTables.Tables[i].Columns.Count; ii++)
-                        {
-                            bool isKey = false;
-                            foreach (DataColumn dc in primarykeys)
-                            {
-                                if (dc.ColumnName == MainWindow.DSTables.Tables[i].Columns[ii].ColumnName)
-                                {
-                                    isKey = true;
-                                }
-                            }
-
-                            if (isKey == false)
-                            {
-                                MenuItem mi = new MenuItem();
-                                mi.Header = "_Delete " + MainWindow.DSTables.Tables[i].Columns[ii].ColumnName;
-                                MenuItem mi2 = new MenuItem();
-                                mi2.Header = "Confirm";
-                                mi2.Click += callDelete;
-                                mi.Items.Add(mi2);
-                                delColumn.Items.Add(mi);
-                            }
-                        }
-                    }
-                }
-
-                // right click rename column
-                MenuItem renameColumn = new MenuItem();
-                renameColumn.Header = "_Rename Column";
-                for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
-                {
-                    if (MainWindow.DSTables.Tables[i] == MainWindow.dgMain.DataContext)
-                    {
-                        for (int ii = 0; ii < MainWindow.DSTables.Tables[i].Columns.Count; ii++)
-                        {
-                            bool isKey = false;
-                            foreach (DataColumn dc in primarykeys)
-                            {
-                                if (dc.ColumnName == MainWindow.DSTables.Tables[i].Columns[ii].ColumnName)
-                                {
-                                    isKey = true;
-                                }
-                            }
-
-                            if (isKey == false)
-                            {
-                                MenuItem mi = new MenuItem();
-                                mi.Header = "_Rename " + MainWindow.DSTables.Tables[i].Columns[ii].ColumnName;
-
-                                txbNewName = new TextBox();
-                                txbNewName.MinWidth = 55;
-                                txbNewName.LostFocus += renameColumnEvent;
-
-                                mi.Items.Add(txbNewName);
-                                renameColumn.Items.Add(mi);
-                            }
-                        }
-                    }
-                }
-
-                cm.Items.Add(addColumn);
-                cm.Items.Add(delColumn);
-                cm.Items.Add(renameColumn);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        private void dgMainView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        // event to call the contextmenu when right mousebutton is pressed.
+        private void DgMainView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -146,7 +54,8 @@ namespace IndieXMLadditions
                     }
                 }
 
-                cmItems();
+                // create buttons and open contextmenu
+                CmItems();
                 cm.IsOpen = true;
             }
             catch (Exception ex)
@@ -155,7 +64,105 @@ namespace IndieXMLadditions
             }
         }
 
-        private void addColumnEvent(object sender, RoutedEventArgs e)
+        TextBox txbColumnName;
+        TextBox txbNewName;
+        
+        // contextmenu
+        private void CmItems ()
+        {
+            try
+            {
+                cm.Items.Clear();
+
+                // right click new column button
+                MenuItem addColumn = new MenuItem { Header = "_Add Column" };
+                // name of the new column
+                txbColumnName = new TextBox { MinWidth = 55 };
+                txbColumnName.LostFocus += AddColumnEvent;
+                addColumn.Items.Add(txbColumnName);
+
+                // right click delete columns buttons
+                MenuItem delColumn = new MenuItem { Header = "_Delete Column" };
+
+                // generate delete menu items based on the current datatable.
+                for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
+                {
+                    if (MainWindow.DSTables.Tables[i] == MainWindow.DGMain.DataContext)
+                    {
+                        for (int ii = 0; ii < MainWindow.DSTables.Tables[i].Columns.Count; ii++)
+                        {
+                            // compare each column to primary keys, and don't make delete key for them.
+                            bool isKey = false;
+                            foreach (DataColumn dc in primarykeys)
+                            {
+                                if (dc.ColumnName == MainWindow.DSTables.Tables[i].Columns[ii].ColumnName)
+                                {
+                                    isKey = true;
+                                }
+                            }
+
+                            // if column is not primary key, proceed and create the delete key.
+                            if (isKey == false)
+                            {
+                                MenuItem mi = new MenuItem{ Header = "_Delete " + MainWindow.DSTables.Tables[i].Columns[ii].ColumnName };
+                                MenuItem mi2 = new MenuItem { Header = "_Confirm"};
+                                mi2.Click += CallDelete;
+                                mi.Items.Add(mi2);
+                                delColumn.Items.Add(mi);
+                            }
+                        }
+                    }
+                }
+
+                // right click rename column
+                MenuItem renameColumn = new MenuItem { Header = "_Rename Column" };
+
+                // create rename menu items based on current datatable
+                for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
+                {
+                    if (MainWindow.DSTables.Tables[i] == MainWindow.DGMain.DataContext)
+                    {
+                        for (int ii = 0; ii < MainWindow.DSTables.Tables[i].Columns.Count; ii++)
+                        {
+                            // again, prevent primary key to be changed
+                            bool isKey = false;
+                            foreach (DataColumn dc in primarykeys)
+                            {
+                                if (dc.ColumnName == MainWindow.DSTables.Tables[i].Columns[ii].ColumnName)
+                                {
+                                    isKey = true;
+                                }
+                            }
+
+                            // create the menu item if not primary key.
+                            if (isKey == false)
+                            {
+                                MenuItem mi = new MenuItem { Header = "_Rename " + MainWindow.DSTables.Tables[i].Columns[ii].ColumnName };
+
+                                txbNewName = new TextBox { MinWidth = 55 };
+                                txbNewName.LostFocus += RenameColumnEvent;
+                                txbNewName.TextChanged += StoreNewName;
+
+                                mi.Items.Add(txbNewName);
+                                renameColumn.Items.Add(mi);
+                            }
+                        }
+                    }
+                }
+
+                // finally add all the context menu items to the contextmenu.
+                cm.Items.Add(addColumn);
+                cm.Items.Add(delColumn);
+                cm.Items.Add(renameColumn);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        // this event is called when the textbox under the add column looses it's focus.
+        private void AddColumnEvent(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -163,15 +170,14 @@ namespace IndieXMLadditions
                 {
                     for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
                     {
-                        if (MainWindow.DSTables.Tables[i] == MainWindow.dgMain.DataContext)
+                        if (MainWindow.DSTables.Tables[i] == MainWindow.DGMain.DataContext)
                         {
-                            DataColumn dc = new DataColumn();
-                            dc.ColumnName = txbColumnName.Text;
+                            DataColumn dc = new DataColumn { ColumnName = txbColumnName.Text };
                             MainWindow.DSTables.Tables[i].Columns.Add ( dc);
                             MainWindow.DSTables.Tables[i].Columns[MainWindow.DSTables.Tables[i].Columns.Count-1].SetOrdinal(MainWindow.DSTables.Tables[i].Columns.Count - 1);
 
-                            MainWindow.dgMain.DataContext = null;
-                            MainWindow.dgMain.DataContext = MainWindow.DSTables.Tables[i];
+                            MainWindow.DGMain.DataContext = null;
+                            MainWindow.DGMain.DataContext = MainWindow.DSTables.Tables[i];
                         }
                     }
                 }
@@ -183,43 +189,47 @@ namespace IndieXMLadditions
             }
         }
 
-        private void renameColumnEvent(object sender, RoutedEventArgs e)
+        // store txbNewName.Text to a variable, for some reason it doesn't work quite right without it.
+        string newName = "";
+        private void StoreNewName(object sender, TextChangedEventArgs e)
+        {
+            newName = ((TextBox)sender).Text;
+        }
+
+        // this event is called when the textbox under the rename column looses it's focus. lostfocus is a bad idea, change it.
+        // (some reason text length check did not work here last i tried)
+        private void RenameColumnEvent(object sender, RoutedEventArgs e)
         {
             try
             {
+
                 DataTable temp = new DataTable();
 
+                // Get the name of the column we wish to change.
                 string s = ((MenuItem)((TextBox)sender).Parent).Header.ToString();
                 string[] split;
                 split = s.Split(' ');
 
                 for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
                 {
-                    if (MainWindow.DSTables.Tables[i] == MainWindow.dgMain.DataContext)
+                    if (MainWindow.DSTables.Tables[i] == MainWindow.DGMain.DataContext)
                     {
                         temp = MainWindow.DSTables.Tables[i];
                     }
                 }
 
-                MessageBox.Show(txbNewName.Text.Length.ToString());
-
-
-                for (int iy = 0; iy < temp.Columns.Count; iy++)
+                for (int i = 0; i < temp.Columns.Count; i++)
                 {
-                    if (split[1] == temp.Columns[iy].ColumnName)
+                    if (split[1] == temp.Columns[i].ColumnName)
                     {
-                        MessageBox.Show("muuttuu");
+                        temp.Columns[split[1]].ColumnName = newName;
                     }
                 }
 
-                MainWindow.dgMain.DataContext = null;
-                MainWindow.dgMain.DataContext = temp;
+                newName = "";
+                MainWindow.DGMain.DataContext = null;
+                MainWindow.DGMain.DataContext = temp;
 
-
-                if (txbNewName.Text.Length > 0)
-                {
-                    
-                }
             }
             catch (Exception ex)
             {
@@ -228,28 +238,30 @@ namespace IndieXMLadditions
             }
         }
 
-        private void callDelete(object sender, RoutedEventArgs e)
+        // this event gets called when the confirm button under delete column menuitem is pressed
+        private void CallDelete(object sender, RoutedEventArgs e)
         {
             try
             {
                 string s = ((MenuItem)((MenuItem)sender).Parent).Header.ToString();
                 string[] split;
                 split = s.Split(' ');
-
+                
                 for (int i = 0; i < MainWindow.DSTables.Tables.Count; i++)
                 {
-                    if (MainWindow.DSTables.Tables[i] == MainWindow.dgMain.DataContext)
+                    if (MainWindow.DSTables.Tables[i] == MainWindow.DGMain.DataContext)
                     {
                         for (int ii = 0; ii < MainWindow.DSTables.Tables[i].Columns.Count; ii++)
                         {
+                            // check if the this column is the column we want to delete
                             if (split[1] == MainWindow.DSTables.Tables[i].Columns[ii].ColumnName)
                             {
                                 MainWindow.DSTables.Tables[i].Columns.Remove(MainWindow.DSTables.Tables[i].Columns[ii]);
                             }
                         }
 
-                        MainWindow.dgMain.DataContext = null;
-                        MainWindow.dgMain.DataContext = MainWindow.DSTables.Tables[i];
+                        MainWindow.DGMain.DataContext = null;
+                        MainWindow.DGMain.DataContext = MainWindow.DSTables.Tables[i];
                     }
                 }
             }

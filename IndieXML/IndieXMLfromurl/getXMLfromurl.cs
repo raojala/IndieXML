@@ -12,7 +12,7 @@ using System.Xml;
 
 namespace IndieXMLfromurl
 {
-    class getXMLfromurl : IPlug
+    class GetXMLfromurl : IPlug
     {
         TextBox tb;
         public string Name
@@ -27,7 +27,8 @@ namespace IndieXMLfromurl
         {
             CreateMenuItem();
         }
-
+        
+        // create menu item
         private void CreateMenuItem()
         {
             try
@@ -53,19 +54,16 @@ namespace IndieXMLfromurl
                     }
                 }
 
-                StackPanel sp = new StackPanel();
-                sp.Orientation = Orientation.Horizontal;
-                tb = new TextBox();
-                tb.Width = 55;
-                Button btnOk = new Button();
-                btnOk.Content = "Ok!";
-                btnOk.Click += xmlfromurl;
+                // i should add this to renaming and deleting also.
+                StackPanel sp = new StackPanel { Orientation = Orientation.Horizontal };
+                tb = new TextBox { Width = 55 };
+                Button btnOk = new Button { Content = "Ok!" };
+                btnOk.Click += XMLFromUrl;
 
                 sp.Children.Add(tb);
                 sp.Children.Add(btnOk);
 
-                MenuItem getXML = new MenuItem();
-                getXML.Header = "Import XML from _Url";
+                MenuItem getXML = new MenuItem { Header = "Import XML from _Url" };
 
                 getXML.Items.Add(sp);
                 
@@ -79,7 +77,8 @@ namespace IndieXMLfromurl
             }
         }
 
-        void xmlfromurl(object sender, RoutedEventArgs e)
+        // event that gets called when ok button from "import from url" is pressed
+        void XMLFromUrl(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -91,7 +90,7 @@ namespace IndieXMLfromurl
             }
         }
 
-        // not working
+        // loads the document from the internet and reads it into dataset
         private void ImportXmlfromurl()
         {
             try
