@@ -55,6 +55,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'debug 32|AnyCPU'">
     <OutputPath>bin\debug 32\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>046E17E9CAD516F65F2F3FB5A6756AB5E4A75765</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>IndieXML_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
